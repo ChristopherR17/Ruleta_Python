@@ -8,7 +8,10 @@ import utils
 #Colores
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-RED = (255, 0, 0)
+RED = (237, 46, 46)
+#Este negro es para la ruleta(Para que sea más visible)
+BLACK2 = (50, 41, 41)
+GREEN = (54, 157, 35) 
 GRAY = (200, 200, 200)
 YELLOW = (255, 255, 70)
 
@@ -23,6 +26,7 @@ pygame.display.set_caption('Window Title')
 
 #General
 nums = []
+
 for num in range(0, 37):
     nums.append(num)
 
@@ -79,8 +83,16 @@ def app_draw():
         point2 = polar_to_cartesian((center_x, center_y), radi, start_angle)
         point3 = polar_to_cartesian((center_x, center_y), radi, end_angle)
 
-        # Dibujar segmento como triángulo
-        pygame.draw.polygon(screen, BLACK, [point1, point2, point3], 3)
+        # Dibujar triángulos de la ruleta y aplicarle color
+        if num == 0:
+            color = GREEN
+            pygame.draw.polygon(screen, color, [point1, point2, point3])
+        elif num % 2 == 0:
+            color = BLACK2
+            pygame.draw.polygon(screen, color, [point1, point2, point3])
+        else:
+            color = RED
+            pygame.draw.polygon(screen, color, [point1, point2, point3])
 
         # Dibujar bordes
         pygame.draw.line(screen, BLACK, point1, point2, 2)

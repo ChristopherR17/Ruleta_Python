@@ -1,0 +1,1 @@
+# dibujar las estadisticas y que si es muy largo tenga un scroller, guarda el historial de tiradas

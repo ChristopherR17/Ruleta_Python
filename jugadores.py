@@ -1,0 +1,1 @@
+# info de los jugadores

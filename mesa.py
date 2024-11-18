@@ -29,14 +29,20 @@ def draw_text_centered(text, rect, color, surface):
     text_rect = text_surface.get_rect(center=(rect.x + rect.width / 2, rect.y + rect.height / 2))
     surface.blit(text_surface, text_rect)
 
-# Secuencia de números en la ruleta (con colores)
+# Números rojos y negros de la ruleta europea
+red_numbers = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27,28, 30, 32, 34, 36]
+black_numbers = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 29, 31, 33, 35]
+
+# Función para obtener el color de un número
 def get_color(number):
     if number == 0:
         return GREEN
-    elif number % 2 == 0:
+    elif number in red_numbers:
+        return RED
+    elif number in black_numbers:
         return BLACK
     else:
-        return RED
+        return WHITE  # En caso de un error (aunque no debería ocurrir)
 
 def draw_table_horizontal(surface):
     surface.fill(GRAY)  # Fondo gris para destacar la mesa
@@ -54,7 +60,8 @@ def draw_table_horizontal(surface):
             color = get_color(number)
             pygame.draw.rect(surface, color, rect)  # Fondo del color correspondiente
             pygame.draw.rect(surface, WHITE, rect, width=2)  # Bordes blancos
-            draw_text_centered(str(number), rect, WHITE, surface if color != WHITE else BLACK)
+            draw_text_centered(str(number), rect, WHITE if color != WHITE else BLACK, surface)
+
 
     # Casilla del número 0
     zero_rect = pygame.Rect(start_x - CELL_WIDTH - MARGIN, start_y, CELL_WIDTH, CELL_HEIGHT * 3)

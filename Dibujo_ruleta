@@ -4,16 +4,17 @@ os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
 import sys
 import utils
+import random
 
 #Colores
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-RED = (237, 46, 46)
-#Este negro es para la ruleta(Para que sea más visible)
-BLACK2 = (50, 41, 41)
-GREEN = (54, 157, 35) 
 GRAY = (200, 200, 200)
 YELLOW = (255, 255, 70)
+#BLACK2 es para la ruleta(Para que sea más visible)
+BLACK2 = (50, 41, 41)
+GREEN = (54, 157, 35) 
+RED = (237, 46, 46)
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -25,11 +26,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Window Title')
 
 #General
-nums = []
-
-for num in range(0, 37):
-    nums.append(num)
-
+nums = list(range(37))
 angle = 0
 counters = [0] * len(nums)
 
@@ -62,6 +59,8 @@ def app_run():
 
 # Dibuixar
 def app_draw():
+    global angle
+    
     # Pintar el fons de blanc
     screen.fill(WHITE)
     
@@ -118,6 +117,8 @@ def app_draw():
 
     #Circulo central de la ruleta
     pygame.draw.circle(screen, BLACK, point1, 30)
+
+    angle += 0.01 
 
     # Actualitzar el dibuix a la finestra
     pygame.display.update()

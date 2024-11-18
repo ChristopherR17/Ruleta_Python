@@ -5,12 +5,14 @@ import pygame
 import sys
 import utils
 import random
+import time
 
 #Colores
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = (200, 200, 200)
 YELLOW = (255, 255, 70)
+BLUE = (70, 130, 180)
 #BLACK2 es para la ruleta(Para que sea más visible)
 BLACK2 = (50, 41, 41)
 GREEN = (54, 157, 35) 
@@ -23,12 +25,20 @@ clock = pygame.time.Clock()
 WIDTH = 800
 HEIGHT = 800
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption('Window Title')
+pygame.display.set_caption('Ruleta')
 
 #General
-nums = list(range(37))
-angle = 0
-counters = [0] * len(nums)
+nums = list(range(37))  
+angle = 0    
+
+# Variables de animación
+is_spinning = False
+start_angle = 0
+target_angle = 0
+current_angle = 0
+spin_speed = 0
+animation_start_time = 0
+animation_duration = 5  
 
 # Bucle de l'aplicació
 def main():
@@ -47,20 +57,42 @@ def main():
 
 # Gestionar events
 def app_events():
+    global is_spinning, animation_start_time, start_angle, target_angle
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             return False
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            # Detectar si el clic está dentro del área del botón
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            if (WIDTH // 2 - 75 <= mouse_x <= WIDTH // 2 + 75) and (HEIGHT - 100 <= mouse_y <= HEIGHT - 50):
+                if not is_spinning: 
+                    # Iniciar la animación de giro
+                    is_spinning = True
+                    animation_start_time = time.time()
+                    start_angle = current_angle
+                    target_angle = current_angle + random.uniform(5, 10) * math.pi 
+                    spin_speed = 0.075  
+
     return True
 
 # Fer càlculs
 def app_run():
-    pass
+    global is_spinning, current_angle, spin_speed
+
+    if is_spinning:
+        elapsed_time = time.time() - animation_start_time
+        if elapsed_time < animation_duration:
+            current_angle = start_angle + (target_angle - start_angle) * (elapsed_time / animation_duration)
+        else:
+            # Una vez que termine la animación, parar el giro
+            current_angle = target_angle
+            is_spinning = False  
 
 # Dibuixar
 def app_draw():
-    global angle
-    
+    global angle, current_angle
+
     # Pintar el fons de blanc
     screen.fill(WHITE)
     
@@ -69,12 +101,12 @@ def app_draw():
 
     # Centro de la ruleta
     center_x, center_y = WIDTH // 2, HEIGHT // 2  
-    radi = 300
+    radi = 275
     slice_angle = 2 * math.pi / len(nums)
 
     for i, num in enumerate(nums):
         # Calcular ángulos del segmento
-        start_angle = angle + i * slice_angle
+        start_angle = current_angle + i * slice_angle
         end_angle = start_angle + slice_angle
 
         # Coordenadas de los puntos
@@ -104,7 +136,7 @@ def app_draw():
         # Renderizar texto
         font = pygame.font.SysFont(None, 24)
         text = f"{num}"
-        text_surface = font.render(text, True, BLACK)
+        text_surface = font.render(text, True, WHITE)
         text_rect = text_surface.get_rect(center=(text_x, text_y))
         screen.blit(text_surface, text_rect)
 
@@ -118,7 +150,12 @@ def app_draw():
     #Circulo central de la ruleta
     pygame.draw.circle(screen, BLACK, point1, 30)
 
-    angle += 0.01 
+    # Dibujar botón de giro
+    pygame.draw.rect(screen, BLUE, (WIDTH // 2 - 75, HEIGHT - 100, 150, 50))
+    font = pygame.font.SysFont(None, 36)
+    text_surface = font.render("GIRAR", True, WHITE)
+    text_rect = text_surface.get_rect(center=(WIDTH // 2, HEIGHT - 75))
+    screen.blit(text_surface, text_rect)
 
     # Actualitzar el dibuix a la finestra
     pygame.display.update()

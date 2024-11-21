@@ -25,32 +25,28 @@ HEIGHT = 1000
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Ruleta')
 
-# Números rojos y negros de la ruleta europea
-red_nums = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27,28, 30, 32, 34, 36]
+# Números negros de la ruleta europea
 black_nums = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 29, 31, 33, 35]
-
-# Configuración de la ruleta
-CENTRO = (WIDTH // 2, HEIGHT // 2)
-RADIO = 250
-SECTORES = 37  # Cantidad de sectores (0 al 36)
-SEPARADOR = 2  # Grosor de los separadores entre sectores
 
 #General
 nums = list(range(37))  
 angle = 0    
 counters = [0] * len(nums)
-
 #Centro de la ruleta
 center_x, center_y = WIDTH // 2, HEIGHT // 2  
+CENTRO = (WIDTH // 2, HEIGHT // 2)
+RADIO = 250
 
 # Variables de animación
 animating = False  # Estado de animación
 start_angle = 0
 target_angle = 0
-spin_speed = 0
 animation_start_time = 0
 animation_duration = 5  
 FPS = 60 
+spin_velocity = 0    
+deceleration = 0.001    
+
 
 # Bucle de l'aplicació
 def main():
@@ -69,7 +65,7 @@ def main():
 
 # Gestionar events
 def app_events():
-    global animating, animation_start_time, start_angle, target_angle
+    global animating, animation_start_time, start_angle, target_angle, spin_velocity
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -79,32 +75,42 @@ def app_events():
             mouse_x, mouse_y = pygame.mouse.get_pos()
             if (WIDTH // 2 - 75 <= mouse_x <= WIDTH // 2 + 75) and (HEIGHT - 100 <= mouse_y <= HEIGHT - 50):
                 if not animating:
-                    # Iniciar la animación de giro
                     animating = True
                     animation_start_time = time.time()
-                    start_angle = angle
+                    spin_velocity = random.uniform(0.1, 0.3)  # Velocidad inicial entre 0.1 y 0.3 rad/s
                     total_spins = random.randint(2, 5)
+                    slice_angle = 2 * math.pi / len(nums)
                     target_index = random.randint(0, len(nums) - 1)
-                    target_angle = -2 * math.pi * total_spins - target_index * (2 * math.pi / len(nums))
+                    target_angle = -2 * math.pi * total_spins - target_index * slice_angle - slice_angle / 2
                     counters[target_index] += 1
+
 
     return True
 
 # Fer càlculs
 def app_run():
-    global angle, animating, animation_start_time, start_angle, target_angle
+    global angle, animating, spin_velocity, result_index, slice_angle
 
     if not animating:
         return
-
-    elapsed_time = time.time() - animation_start_time
-    if elapsed_time < animation_duration:
-        # Interpolar el ángulo en función del tiempo de la animación
-        angle = start_angle + (target_angle - start_angle) * (elapsed_time / animation_duration)
+    
+    if spin_velocity > 0:
+        # Actualizar el ángulo según la velocidad angular
+        angle += spin_velocity
+        spin_velocity -= deceleration  # Reducir la velocidad gradualmente
     else:
-        # Finalizar la animación
-        angle = target_angle
+        # Finalizar la animación cuando la velocidad llegue a cero
         animating = False
+        
+        #Resultado
+        normalized_angle = -angle % (2 * math.pi) 
+        slice_angle = 2 * math.pi / len(nums)
+        adjusted_angle = normalized_angle + slice_angle / 2
+        result_index = int(adjusted_angle // slice_angle) % len(nums)
+        result_number = nums[result_index]
+
+        # Mostrar el resultado en la terminal
+        print(f"Resultado de la ruleta: {result_number}")
 
 # Dibuixar
 def app_draw():
@@ -166,11 +172,13 @@ def app_draw():
         screen.blit(text_surface, text_rect)
 
     # Dibujar indicador
+    # Dibujar indicador a la derecha
     pygame.draw.polygon(screen, RED, [
-        (center_x, center_y - radi - 10),
-        (center_x + 20, center_y - radi - 40),
-        (center_x - 20, center_y - radi - 40)
+        (center_x + radi + 10, center_y),
+        (center_x + radi + 40, center_y - 20),
+        (center_x + radi + 40, center_y + 20)
     ])
+
 
     #Circulo central de la ruleta
     pygame.draw.circle(screen, GOLD, point1, 30)

@@ -90,10 +90,10 @@ def main():
     estadisticas = inicializar_estadisticas()
 
     # Ejemplo: agregar tiradas ficticias
-    for i in range(1, 21):
+    for i in range(1, 29):
         resultado = i  # Resultado ficticio
         creditos = {"Taronja": 100 - i, "Lila": 90 + i, "Blau": 80 + i // 2}
-        apuestas = {"Taronja": 10, "Lila": 20, "Blau": 30}
+        apuestas = {"Taronja": 10 + i, "Lila": 20 + i, "Blau": 30+ i}
         agregar_tirada(estadisticas, resultado, creditos, apuestas)
 
     # Bucle principal

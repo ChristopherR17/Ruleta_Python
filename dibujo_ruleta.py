@@ -25,11 +25,12 @@ HEIGHT = 1000
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Ruleta')
 
-# Números negros de la ruleta europea
-black_nums = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 29, 31, 33, 35]
+# Números rojos y negros de la ruleta europea
+black_nums = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35]
+red_numbers = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
 
 #General
-nums = list(range(37))  
+nums = [0,1,2,3,4,5,6,7,8,9,10,12,11,14,13,16,15,18,17,19,20,21,22,23,24,25,26,27,28,30,29,32,31,34,33,36,35]
 angle = 0    
 counters = [0] * len(nums)
 #Centro de la ruleta
@@ -74,43 +75,42 @@ def app_events():
             # Detectar si el clic está dentro del área del botón
             mouse_x, mouse_y = pygame.mouse.get_pos()
             if (WIDTH // 2 - 75 <= mouse_x <= WIDTH // 2 + 75) and (HEIGHT - 100 <= mouse_y <= HEIGHT - 50):
+                #Aqui es donde empieza la animacion de giro
                 if not animating:
                     animating = True
                     animation_start_time = time.time()
-                    spin_velocity = random.uniform(0.1, 0.3)  # Velocidad inicial entre 0.1 y 0.3 rad/s
+                    spin_velocity = random.uniform(0.15, 0.2)
                     total_spins = random.randint(2, 5)
                     slice_angle = 2 * math.pi / len(nums)
                     target_index = random.randint(0, len(nums) - 1)
                     target_angle = -2 * math.pi * total_spins - target_index * slice_angle - slice_angle / 2
                     counters[target_index] += 1
-
-
     return True
 
 # Fer càlculs
 def app_run():
-    global angle, animating, spin_velocity, result_index, slice_angle
+    global angle, animating, spin_velocity
 
     if not animating:
         return
     
+    #La desaceleracion
     if spin_velocity > 0:
-        # Actualizar el ángulo según la velocidad angular
         angle += spin_velocity
-        spin_velocity -= deceleration  # Reducir la velocidad gradualmente
+        spin_velocity -= deceleration 
+
     else:
-        # Finalizar la animación cuando la velocidad llegue a cero
         animating = False
         
         #Resultado
-        normalized_angle = -angle % (2 * math.pi) 
+        normalized_angle = -angle % (2 * math.pi)  # Normalizar a un rango de [0, 2π]
         slice_angle = 2 * math.pi / len(nums)
-        adjusted_angle = normalized_angle + slice_angle / 2
-        result_index = int(adjusted_angle // slice_angle) % len(nums)
+        result_index = int(normalized_angle // slice_angle)
         result_number = nums[result_index]
 
         # Mostrar el resultado en la terminal
         print(f"Resultado de la ruleta: {result_number}")
+
 
 # Dibuixar
 def app_draw():
@@ -118,7 +118,7 @@ def app_draw():
     screen.fill(WHITE)
     
     # Dibuixar la graella(Despues se quita o se comenta)
-    utils.draw_grid(pygame, screen, 50)
+    #utils.draw_grid(pygame, screen, 50)
 
     # Dibujar la base de madera
     pygame.draw.circle(screen, BROWN, CENTRO, RADIO + 50)
@@ -164,7 +164,7 @@ def app_draw():
         mid_angle = start_angle + slice_angle / 2
         text_x, text_y = polar_to_cartesian((center_x, center_y), radi * 0.7, mid_angle)
 
-        # Renderizar texto
+        # Renderizar numeros de la ruleta
         font = pygame.font.SysFont(None, 24)
         text = f"{num}"
         text_surface = font.render(text, True, WHITE)
@@ -172,20 +172,18 @@ def app_draw():
         screen.blit(text_surface, text_rect)
 
     # Dibujar indicador
-    # Dibujar indicador a la derecha
     pygame.draw.polygon(screen, RED, [
         (center_x + radi + 10, center_y),
         (center_x + radi + 40, center_y - 20),
         (center_x + radi + 40, center_y + 20)
     ])
 
-
     #Circulo central de la ruleta
     pygame.draw.circle(screen, GOLD, point1, 30)
     #Anillo exterior
     pygame.draw.circle(screen, GOLD, point1, radi+2, 5)
 
-    # Dibujar botón de giro
+    #Boton de giro
     pygame.draw.rect(screen, BLUE, (WIDTH // 2 - 75, HEIGHT - 100, 150, 50))
     font = pygame.font.SysFont(None, 36)
     text_surface = font.render("GIRAR", True, WHITE)

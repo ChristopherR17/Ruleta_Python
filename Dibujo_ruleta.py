@@ -10,13 +10,11 @@ import time
 #Colores
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-GRAY = (200, 200, 200)
-YELLOW = (238, 191, 28) 
 BLUE = (70, 130, 180)
-#BLACK2 es para la ruleta(Para que sea más visible)
-BLACK2 = (50, 41, 41)
-GREEN = (54, 157, 35) 
-RED = (237, 46, 46)
+BROWN = (139, 69, 19)
+GREEN = (0, 200, 0)
+RED = (200, 0, 0)
+GOLD = (212, 175, 55)
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -30,6 +28,12 @@ pygame.display.set_caption('Ruleta')
 # Números rojos y negros de la ruleta europea
 red_nums = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27,28, 30, 32, 34, 36]
 black_nums = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 29, 31, 33, 35]
+
+# Configuración de la ruleta
+CENTRO = (WIDTH // 2, HEIGHT // 2)
+RADIO = 250
+SECTORES = 37  # Cantidad de sectores (0 al 36)
+SEPARADOR = 2  # Grosor de los separadores entre sectores
 
 #General
 nums = list(range(37))  
@@ -104,13 +108,22 @@ def app_run():
 
 # Dibuixar
 def app_draw():
-    global angle
-
     # Pintar el fons de blanc
     screen.fill(WHITE)
     
     # Dibuixar la graella(Despues se quita o se comenta)
     utils.draw_grid(pygame, screen, 50)
+
+    # Dibujar la base de madera
+    pygame.draw.circle(screen, BROWN, CENTRO, RADIO + 50)
+
+    # Dibujar el borde dorado
+    pygame.draw.circle(screen, GOLD, CENTRO, RADIO + 10)
+
+    # Dibujar el círculo principal
+    pygame.draw.circle(screen, BLACK, CENTRO, RADIO)
+    pygame.draw.circle(screen, WHITE, CENTRO, RADIO, 5)
+
 
     # Centro de la ruleta
     radi = 200
@@ -131,7 +144,7 @@ def app_draw():
             color = GREEN
             pygame.draw.polygon(screen, color, [point1, point2, point3])
         elif num in black_nums:
-            color = BLACK2
+            color = BLACK
             pygame.draw.polygon(screen, color, [point1, point2, point3])
         else:
             color = RED
@@ -160,9 +173,9 @@ def app_draw():
     ])
 
     #Circulo central de la ruleta
-    pygame.draw.circle(screen, YELLOW, point1, 30)
+    pygame.draw.circle(screen, GOLD, point1, 30)
     #Anillo exterior
-    pygame.draw.circle(screen, YELLOW, point1, radi+2, 5)
+    pygame.draw.circle(screen, GOLD, point1, radi+2, 5)
 
     # Dibujar botón de giro
     pygame.draw.rect(screen, BLUE, (WIDTH // 2 - 75, HEIGHT - 100, 150, 50))

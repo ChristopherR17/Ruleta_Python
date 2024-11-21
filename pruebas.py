@@ -1,163 +1,108 @@
 import pygame
 import math
-import random
-import sys
-import time
 
 # Inicializar Pygame
 pygame.init()
 
 # Configuración de la pantalla
-WIDTH, HEIGHT = 1000, 1000
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Ruleta")
+ANCHO, ALTO = 800, 800
+pantalla = pygame.display.set_mode((ANCHO, ALTO))
+pygame.display.set_caption("Ruleta de Casino Decorada")
 
 # Colores
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-RED = (255, 0, 0)
-YELLOW = (238, 191, 28)
-BLUE = (70, 130, 180)
-BLACK2 = (50, 41, 41)
-colors = [
-    (255, 200, 200), (200, 255, 200), (200, 200, 255),
-    (255, 255, 200), (200, 255, 255), (255, 200, 255)
-]
+NEGRO = (0, 0, 0)
+BLANCO = (255, 255, 255)
+ROJO = (200, 0, 0)
+VERDE = (0, 200, 0)
+MADERA = (139, 69, 19)
+DORADO = (212, 175, 55)
+
+# Números rojos y negros de la ruleta europea
+red_nums = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27,28, 30, 32, 34, 36]
+black_nums = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 29, 31, 33, 35]
 
 # Configuración de la ruleta
-names = ["Dog 🐶", "Cat 🐱", "Bear 🐻", "Unicorn 🦄", "Lion 🦁", "Cow 🐮", "Pig 🐷", "Hamster 🐹", "Penguin 🐧"]
-counters = [0] * len(names)
+CENTRO = (ANCHO // 2, ALTO // 2)
+RADIO = 250
+SECTORES = 37  # Cantidad de sectores (0 al 36)
+SEPARADOR = 2  # Grosor de los separadores entre sectores
 
-# Variables para la animación
-angle = 0  # Ángulo actual de la ruleta
-animating = False  # Estado de animación
-start_angle = 0
-target_angle = 0
-spin_speed = 0
-animation_start_time = 0
-animation_duration = 5  # Duración de la animación en segundos
-FPS = 60
-clock = pygame.time.Clock()
+# Función para dibujar la ruleta
+def dibujar_ruleta():
+    # Dibujar la base de madera
+    pygame.draw.circle(pantalla, MADERA, CENTRO, RADIO + 50)
 
-# Función para convertir coordenadas polares a cartesianas
-def polar_to_cartesian(center, radius, angle_rad):
-    x = center[0] + radius * math.cos(angle_rad)
-    y = center[1] + radius * math.sin(angle_rad)
-    return x, y
+    # Dibujar el borde dorado
+    pygame.draw.circle(pantalla, DORADO, CENTRO, RADIO + 10)
 
-# Dibujar la ruleta
-def draw_ruleta():
-    global angle
-    screen.fill(WHITE)
-    cx, cy = WIDTH // 2, HEIGHT // 2  # Centro de la ruleta
-    radius = 300
-    slice_angle = 2 * math.pi / len(names)
+    # Dibujar el círculo principal
+    pygame.draw.circle(pantalla, NEGRO, CENTRO, RADIO)
+    pygame.draw.circle(pantalla, BLANCO, CENTRO, RADIO, 5)
 
-    for i, name in enumerate(names):
-        # Calcular ángulos del segmento
-        start_angle = angle + i * slice_angle
-        end_angle = start_angle + slice_angle
+    # Dibujar sectores
+    angulo_por_sector = 360 / SECTORES
 
-        # Coordenadas de los puntos
-        point1 = (cx, cy)
-        point2 = polar_to_cartesian((cx, cy), radius, start_angle)
-        point3 = polar_to_cartesian((cx, cy), radius, end_angle)
+    for i in range(SECTORES):
+        # Calcular los ángulos inicial y final del sector
+        angulo_inicio = math.radians(i * angulo_por_sector)
+        angulo_final = math.radians((i + 1) * angulo_por_sector)
 
-        # Dibujar segmento como triángulo
-        color = colors[i % len(colors)]
-        pygame.draw.polygon(screen, color, [point1, point2, point3])
+        # Calcular el color del sector
+        if i == 0:
+            color = VERDE 
+        elif i in black_nums:
+            color = NEGRO
+        else:
+            color = ROJO
 
-        # Dibujar bordes
-        pygame.draw.line(screen, BLACK, point1, point2, 2)
-        pygame.draw.line(screen, BLACK, point1, point3, 2)
+        # Dibujar el sector como un polígono
+        x1 = CENTRO[0] + RADIO * math.cos(angulo_inicio)
+        y1 = CENTRO[1] - RADIO * math.sin(angulo_inicio)
+        x2 = CENTRO[0] + RADIO * math.cos(angulo_final)
+        y2 = CENTRO[1] - RADIO * math.sin(angulo_final)
+        pygame.draw.polygon(pantalla, color, [CENTRO, (x1, y1), (x2, y2)])
+        
+        # Dibujar separadores
+        pygame.draw.line(pantalla, BLANCO, (x1, y1), (x2, y2), SEPARADOR)
 
-        # Calcular posición del texto
-        mid_angle = start_angle + slice_angle / 2
-        text_x, text_y = polar_to_cartesian((cx, cy), radius * 0.7, mid_angle)
+        # Agregar texto del número
+        angulo_texto = math.radians((i + 0.5) * angulo_por_sector)
+        x_texto = CENTRO[0] + (RADIO - 40) * math.cos(angulo_texto)
+        y_texto = CENTRO[1] - (RADIO - 40) * math.sin(angulo_texto)
 
-        # Renderizar texto
-        font = pygame.font.SysFont(None, 24)
-        text = f"{name} ({counters[i]})"
-        text_surface = font.render(text, True, BLACK)
-        text_rect = text_surface.get_rect(center=(text_x, text_y))
-        screen.blit(text_surface, text_rect)
+        font = pygame.font.Font(None, 24)
+        texto = font.render(str(i), True, BLANCO)
+        texto_rect = texto.get_rect(center=(x_texto, y_texto))
+        pantalla.blit(texto, texto_rect)
 
-    # Dibujar indicador
-    pygame.draw.polygon(screen, RED, [
-        (cx, cy - radius - 10),
-        (cx + 20, cy - radius - 40),
-        (cx - 20, cy - radius - 40)
+    # Dibujar círculo central dorado
+    pygame.draw.circle(pantalla, DORADO, CENTRO, 40)
+
+    # Dibujar el "marcador" (flecha) en la parte superior
+    pygame.draw.polygon(pantalla, ROJO, [
+        (CENTRO[0], CENTRO[1] - RADIO - 20),
+        (CENTRO[0] - 15, CENTRO[1] - RADIO - 50),
+        (CENTRO[0] + 15, CENTRO[1] - RADIO - 50)
     ])
+    pygame.draw.line(pantalla, BLANCO, 
+                     (CENTRO[0], CENTRO[1] - RADIO), 
+                     (CENTRO[0], CENTRO[1] - RADIO - 50), 3)
 
-    # Dibujar botón de girar
-    pygame.draw.rect(screen, BLUE, (WIDTH // 2 - 75, HEIGHT - 100, 150, 50))
-    font = pygame.font.SysFont(None, 36)
-    text_surface = font.render("GIRAR", True, WHITE)
-    text_rect = text_surface.get_rect(center=(WIDTH // 2, HEIGHT - 75))
-    screen.blit(text_surface, text_rect)
+# Loop principal
+corriendo = True
+while corriendo:
+    for evento in pygame.event.get():
+        if evento.type == pygame.QUIT:
+            corriendo = False
 
-# Animar el giro de la ruleta
-def animate_spin():
-    global angle, animating, animation_start_time, start_angle, target_angle
+    # Dibujar fondo
+    pantalla.fill(VERDE)
 
-    if not animating:
-        return
+    # Dibujar la ruleta
+    dibujar_ruleta()
 
-    elapsed_time = time.time() - animation_start_time
-    if elapsed_time < animation_duration:
-        # Interpolar el ángulo en función del tiempo de la animación
-        angle = start_angle + (target_angle - start_angle) * (elapsed_time / animation_duration)
-    else:
-        # Finalizar la animación
-        angle = target_angle
-        animating = False
+    # Actualizar pantalla
+    pygame.display.flip()
 
-# Gestionar los eventos
-def app_events():
-    global animating, animation_start_time, start_angle, target_angle
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            return False
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            # Detectar si el clic está dentro del área del botón
-            mouse_x, mouse_y = pygame.mouse.get_pos()
-            if (WIDTH // 2 - 75 <= mouse_x <= WIDTH // 2 + 75) and (HEIGHT - 100 <= mouse_y <= HEIGHT - 50):
-                if not animating:
-                    # Iniciar la animación de giro
-                    animating = True
-                    animation_start_time = time.time()
-                    start_angle = angle
-                    total_spins = random.randint(2, 5)
-                    target_index = random.randint(0, len(names) - 1)
-                    target_angle = -2 * math.pi * total_spins - target_index * (2 * math.pi / len(names))
-                    counters[target_index] += 1
-
-    return True
-
-# Función principal
-def main():
-    global animating
-
-    running = True
-    while running:
-        # Gestionar eventos
-        running = app_events()
-
-        # Actualizar el estado de la animación
-        animate_spin()
-
-        # Dibujar la ruleta
-        draw_ruleta()
-
-        # Actualizar pantalla
-        pygame.display.flip()
-
-        # Limitar a 60 FPS
-        clock.tick(FPS)
-
-    pygame.quit()
-    sys.exit()
-
-if __name__ == "__main__":
-    main()
+# Salir de Pygame
+pygame.quit()

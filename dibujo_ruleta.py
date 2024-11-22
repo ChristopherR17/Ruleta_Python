@@ -34,9 +34,9 @@ nums = [0,1,2,3,4,5,6,7,8,9,10,12,11,14,13,16,15,18,17,19,20,21,22,23,24,25,26,2
 angle = 0    
 counters = [0] * len(nums)
 #Centro de la ruleta
-center_x, center_y = WIDTH // 2, HEIGHT // 2  
-CENTRO = (WIDTH // 2, HEIGHT // 2)
-RADIO = 250
+center_x, center_y = WIDTH // 4, HEIGHT // 4  
+CENTRO = (WIDTH // 4, HEIGHT // 4)
+RADIO = 175
 
 # Variables de animación
 animating = False  # Estado de animación
@@ -116,9 +116,6 @@ def app_run():
 def app_draw():
     # Pintar el fons de blanc
     screen.fill(WHITE)
-    
-    # Dibuixar la graella(Despues se quita o se comenta)
-    #utils.draw_grid(pygame, screen, 50)
 
     # Dibujar la base de madera
     pygame.draw.circle(screen, BROWN, CENTRO, RADIO + 50)
@@ -132,7 +129,7 @@ def app_draw():
 
 
     # Centro de la ruleta
-    radi = 200
+    radi = 150
     slice_angle = 2 * math.pi / len(nums)
 
     for i, num in enumerate(nums):
@@ -141,9 +138,9 @@ def app_draw():
         end_angle = start_angle + slice_angle
 
         # Coordenadas de los puntos
-        point1 = (center_x, center_y)
-        point2 = polar_to_cartesian((center_x, center_y), radi, start_angle)
-        point3 = polar_to_cartesian((center_x, center_y), radi, end_angle)
+        point1 = (CENTRO)
+        point2 = polar_to_cartesian(CENTRO, radi, start_angle)
+        point3 = polar_to_cartesian(CENTRO, radi, end_angle)
 
         # Dibujar triángulos de la ruleta y aplicarle color
         if num == 0:
@@ -162,7 +159,7 @@ def app_draw():
 
         # Calcular posición del texto
         mid_angle = start_angle + slice_angle / 2
-        text_x, text_y = polar_to_cartesian((center_x, center_y), radi * 0.7, mid_angle)
+        text_x, text_y = polar_to_cartesian(CENTRO, radi * 0.7, mid_angle)
 
         # Renderizar numeros de la ruleta
         font = pygame.font.SysFont(None, 24)
@@ -171,17 +168,23 @@ def app_draw():
         text_rect = text_surface.get_rect(center=(text_x, text_y))
         screen.blit(text_surface, text_rect)
 
-    # Dibujar indicador
-    pygame.draw.polygon(screen, RED, [
-        (center_x + radi + 10, center_y),
-        (center_x + radi + 40, center_y - 20),
-        (center_x + radi + 40, center_y + 20)
-    ])
-
     #Circulo central de la ruleta
     pygame.draw.circle(screen, GOLD, point1, 30)
     #Anillo exterior
     pygame.draw.circle(screen, GOLD, point1, radi+2, 5)
+
+    # Dibujar indicador
+    pygame.draw.polygon(screen, RED, [
+        (center_x + radi - 15, center_y),
+        (center_x + radi + 40, center_y - 15),
+        (center_x + radi + 40, center_y + 15)
+    ])
+    #Contorno del indicador
+    pygame.draw.polygon(screen, GOLD, [
+        (center_x + radi - 15, center_y),
+        (center_x + radi + 40, center_y - 15),
+        (center_x + radi + 40, center_y + 15)
+    ], 3)
 
     #Boton de giro
     pygame.draw.rect(screen, BLUE, (WIDTH // 2 - 75, HEIGHT - 100, 150, 50))

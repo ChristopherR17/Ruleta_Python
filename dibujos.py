@@ -3,120 +3,47 @@ import os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
 import sys
-import utils
 import random
 import time
+
+# Definir la finestra
+WIDTH = 1800
+HEIGHT = 950
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+
+pygame.init()
+clock = pygame.time.Clock()
 
 #Colores
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+GRAY = (200, 200, 200)
 BLUE = (70, 130, 180)
 BROWN = (139, 69, 19)
 GREEN = (0, 200, 0)
 RED = (200, 0, 0)
 GOLD = (212, 175, 55)
 
-pygame.init()
-clock = pygame.time.Clock()
-
-# Definir la finestra
-WIDTH = 1000
-HEIGHT = 1000
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption('Ruleta')
-
-# Números rojos y negros de la ruleta europea
-black_nums = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35]
-red_numbers = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
-
 #General
 nums = [0,1,2,3,4,5,6,7,8,9,10,12,11,14,13,16,15,18,17,19,20,21,22,23,24,25,26,27,28,30,29,32,31,34,33,36,35]
 angle = 0    
 counters = [0] * len(nums)
-#Centro de la ruleta
 center_x, center_y = WIDTH // 4, HEIGHT // 4  
 CENTRO = (WIDTH // 4, HEIGHT // 4)
 RADIO = 175
 
-# Variables de animación
-animating = False  # Estado de animación
-start_angle = 0
-target_angle = 0
-animation_start_time = 0
-animation_duration = 5  
-FPS = 60 
-spin_velocity = 0    
-deceleration = 0.001    
+CELL_WIDTH = 60
+CELL_HEIGHT = 60
+MARGIN = 10  
 
+# Números rojos y negros de la ruleta europea
+black_numbers = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35]
+red_numbers = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
 
-# Bucle de l'aplicació
-def main():
-    is_looping = True
-
-    while is_looping:
-        is_looping = app_events()
-        app_run()
-        app_draw()
-
-        clock.tick(60) # Limitar a 60 FPS
-
-    # Fora del bucle, tancar l'aplicació
-    pygame.quit()
-    sys.exit()
-
-# Gestionar events
-def app_events():
-    global animating, animation_start_time, start_angle, target_angle, spin_velocity
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            return False
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            # Detectar si el clic está dentro del área del botón
-            mouse_x, mouse_y = pygame.mouse.get_pos()
-            if (WIDTH // 2 - 75 <= mouse_x <= WIDTH // 2 + 75) and (HEIGHT - 100 <= mouse_y <= HEIGHT - 50):
-                #Aqui es donde empieza la animacion de giro
-                if not animating:
-                    animating = True
-                    animation_start_time = time.time()
-                    spin_velocity = random.uniform(0.15, 0.2)
-                    total_spins = random.randint(2, 5)
-                    slice_angle = 2 * math.pi / len(nums)
-                    target_index = random.randint(0, len(nums) - 1)
-                    target_angle = -2 * math.pi * total_spins - target_index * slice_angle - slice_angle / 2
-                    counters[target_index] += 1
-    return True
-
-# Fer càlculs
-def app_run():
-    global angle, animating, spin_velocity
-
-    if not animating:
-        return
-    
-    #La desaceleracion
-    if spin_velocity > 0:
-        angle += spin_velocity
-        spin_velocity -= deceleration 
-
-    else:
-        animating = False
-        
-        #Resultado
-        normalized_angle = -angle % (2 * math.pi)  # Normalizar a un rango de [0, 2π]
-        slice_angle = 2 * math.pi / len(nums)
-        result_index = int(normalized_angle // slice_angle)
-        result_number = nums[result_index]
-
-        # Mostrar el resultado en la terminal
-        print(f"Resultado de la ruleta: {result_number}")
-
-
-# Dibuixar
 def app_draw():
     ############ RULETA ############
     # Pintar el fons de blanc
-    screen.fill(WHITE)
+    screen.fill(GRAY)
 
     # Dibujar la base de madera
     pygame.draw.circle(screen, BROWN, CENTRO, RADIO + 50)
@@ -127,6 +54,7 @@ def app_draw():
     # Dibujar el círculo principal
     pygame.draw.circle(screen, BLACK, CENTRO, RADIO)
     pygame.draw.circle(screen, WHITE, CENTRO, RADIO, 5)
+
 
     # Centro de la ruleta
     radi = 150
@@ -146,7 +74,7 @@ def app_draw():
         if num == 0:
             color = GREEN
             pygame.draw.polygon(screen, color, [point1, point2, point3])
-        elif num in black_nums:
+        elif num in black_numbers:
             color = BLACK
             pygame.draw.polygon(screen, color, [point1, point2, point3])
         else:
@@ -193,17 +121,73 @@ def app_draw():
     text_rect = text_surface.get_rect(center=(WIDTH // 2, HEIGHT - 75))
     screen.blit(text_surface, text_rect)
 
-<<<<<<< Updated upstream
-    # Actualitzar el dibuix a la finestra
+    ############ MESA ############
+    table_width = CELL_WIDTH * 12 + CELL_WIDTH + MARGIN * 3  
+    start_x = WIDTH - table_width - 70  
+    start_y = 100  
+
+    # Fuente para los números
+    font = pygame.font.SysFont("Arial", 20)
+
+    # Dibujar un texto centrado en un rectángulo
+    def draw_text_centered(text, rect, color, screen):
+        text_surface = font.render(text, True, color)
+        text_rect = text_surface.get_rect(center=(rect.x + rect.width / 2, rect.y + rect.height / 2))
+        screen.blit(text_surface, text_rect)
+
+    def get_color(number):
+        if number == 0:
+            return GREEN
+        elif number in red_numbers:
+            return RED
+        elif number in black_numbers:
+            return BLACK
+
+    # Dibujar números de la tabla
+    for row in range(3):  # 3 filas
+        for col in range(12):  # 12 columnas
+            number = (2 - row) + col * 3 + 1
+            if number > 36:
+                break  # Evitar dibujar números mayores a 36
+            rect = pygame.Rect(start_x + col * CELL_WIDTH, start_y + row * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT)
+            color = get_color(number)
+            pygame.draw.rect(screen, color, rect)  # Fondo del color correspondiente
+            pygame.draw.rect(screen, WHITE, rect, width=2)  # Bordes blancos
+            draw_text_centered(str(number), rect, WHITE if color != WHITE else BLACK, screen)
+
+    # Casilla del número 0
+    zero_rect = pygame.Rect(start_x - CELL_WIDTH - MARGIN, start_y, CELL_WIDTH, CELL_HEIGHT * 3)
+    pygame.draw.rect(screen, GREEN, zero_rect)
+    pygame.draw.rect(screen, WHITE, zero_rect, width=2)
+    draw_text_centered("0", zero_rect, WHITE, screen)
+
+    # Zonas de apuestas adicionales
+    apuesta_y = start_y + CELL_HEIGHT * 3 + MARGIN * 2
+    apuestas = [("Rojo", RED), ("Negro", BLACK), ("Par", WHITE), ("Impar", WHITE)]
+    for i, (label, color) in enumerate(apuestas):
+        rect = pygame.Rect(start_x + i * (CELL_WIDTH * 3 + MARGIN), apuesta_y, CELL_WIDTH * 3, CELL_HEIGHT)
+        pygame.draw.rect(screen, color, rect)
+        pygame.draw.rect(screen, WHITE, rect, width=2)
+        draw_text_centered(label, rect, BLUE, screen)
+
+    # Zonas de columnas
+    column_start_x = start_x + CELL_WIDTH * 12 + MARGIN * 2
+    for i in range(3):
+        rect = pygame.Rect(column_start_x, start_y + i * CELL_HEIGHT, CELL_WIDTH * 2, CELL_HEIGHT)
+        pygame.draw.rect(screen, GRAY, rect)
+        pygame.draw.rect(screen, WHITE, rect, width=2)
+        draw_text_centered(f"Columna {i + 1}", rect, BLACK, screen)
+
+    # Zona de banca
+    banca_rect = pygame.Rect(WIDTH - 120, start_y - 70, 100, 50)
+    pygame.draw.rect(screen, WHITE, banca_rect, width=2)
+    draw_text_centered("Banca", banca_rect, WHITE, screen)
+
     pygame.display.update()
 
-=======
->>>>>>> Stashed changes
-# Función para convertir coordenadas polares a cartesianas
+    # Función para convertir coordenadas polares a cartesianas
 def polar_to_cartesian(center, radius, angle_rad):
     x = center[0] + radius * math.cos(angle_rad)
     y = center[1] + radius * math.sin(angle_rad)
     return x, y
 
-if __name__ == "__main__":
-    main()

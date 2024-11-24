@@ -18,12 +18,12 @@ GREEN = (0, 128, 0)
 RED = (200, 0, 0)
 GOLD = (212, 175, 55)
 
-# Configuración general
+#Variables globales
 nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 11, 14, 13, 16, 15, 18, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 30, 29, 32, 31, 34, 33, 36, 35]
 angle = 0
 counters = [0] * len(nums)
 
-# Nueva posición de la ruleta
+#Posicion de la ruleta
 CENTER_X, CENTER_Y = WIDTH // 7, HEIGHT // 4  
 CENTRO = (CENTER_X, CENTER_Y)
 RADIO = 175

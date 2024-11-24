@@ -2,6 +2,7 @@ import pygame
 import sys
 import dibujos
 import run_and_events
+import jugadores
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -24,7 +25,7 @@ def main():
 
         # Dibujar la ruleta y la mesa
         dibujos.angle = angle
-        dibujos.app_draw()
+        dibujos.app_draw(jugadores.jugadores)
 
         clock.tick(60)
 

@@ -1,3 +1,115 @@
+import pygame
+import math
+
+# Inicializar Pygame
+pygame.init()
+
+# Crear pantalla
+WIDTH = 800
+HEIGHT = 600
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+
+# Definir colores
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+BLUE = (0, 0, 255)
+
+# Inicializar fuente
+font = pygame.font.SysFont("Arial", 24)
+
+# Función para dibujar una ficha de póker
+def dibuixar_fitxa(screen, x, y, color, denominacio):
+    # Círculo exterior
+    pygame.draw.circle(screen, BLACK, (x, y), 30)  # Borde negro
+    pygame.draw.circle(screen, color, (x, y), 28)  # Color principal
+
+    # Decoración de borde
+    for i in range(12):
+        angle = i * 30
+        rad = math.radians(angle)
+        dx = int(24 * math.cos(rad))
+        dy = int(24 * math.sin(rad))
+        pygame.draw.circle(screen, WHITE, (x + dx, y + dy), 4)
+
+    # Círculo interior
+    pygame.draw.circle(screen, WHITE, (x, y), 18)
+
+    # Número de denominación
+    den_text = font.render(str(denominacio), True, color)
+    screen.blit(den_text, (x - den_text.get_width() // 2, y - den_text.get_height() // 2))
+
+# Función para dibujar las fichas de cada jugador
+def dibuixar_fitxes(screen, players):
+    y_offset = 50
+    for idx, (nom, data) in enumerate(players.items()):
+        color = data["color"]
+        saldo = data["saldo"]
+        fitxes = data["fitxes"]
+
+        # Dibujar el nombre del jugador
+        text = font.render(f"{nom} - Crèdit: {saldo}", True, BLACK)
+        screen.blit(text, (50, y_offset))
+        y_offset += 40
+
+        # Dibujar las fichas
+        x_offset = 150
+        for den, quantitat in fitxes.items():
+            for _ in range(quantitat):
+                dibuixar_fitxa(screen, x_offset, y_offset, color, den)
+                x_offset += 80  # Desplazar las fichas para que no se solapen
+
+        y_offset += 100  # Espacio entre jugadores
+
+# Datos de ejemplo para jugadores
+players = {
+    "Taronja": {
+        "color": (255,128,0), #Naranja # Color de las fichas
+        "saldo": 100,
+        "fitxes": {
+            5: 3,  # 3 fichas de 5
+            10: 2, # 2 fichas de 10
+            20: 1, # 1 ficha de 20
+        }
+    },
+    "Lila": {
+        "color": (138, 43, 226),  # Color lila
+        "saldo": 120,
+        "fitxes": {
+            5: 2,  # 2 fichas de 5
+            50: 1, # 1 ficha de 50
+            100: 1, # 1 ficha de 100
+        }
+    },
+    "Blau": {
+        "color": BLUE,
+        "saldo": 150,
+        "fitxes": {
+            10: 3,  # 3 fichas de 10
+            50: 1,  # 1 ficha de 50
+        }
+    }
+}
+
+# Ciclo principal de Pygame
+running = True
+while running:
+    # Comprobar eventos
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    # Limpiar pantalla
+    screen.fill(WHITE)
+
+    # Dibujar fichas de los jugadores
+    dibuixar_fitxes(screen, players)
+
+    # Actualizar pantalla
+    pygame.display.update()
+
+# Salir de Pygame
+pygame.quit()
 
 
 ########## CODIGO DE RULETA FUNCIONAL(CON EVENTOS Y CALCULOS) ##########

@@ -45,8 +45,7 @@ def get_color(number):
     else:
         return BLACK
 
-
-def app_draw():
+def app_draw(jugadores):
     global angle
 
     ############ RULETA ############
@@ -181,7 +180,53 @@ def app_draw():
 
     pygame.display.update()
 
-    # Función para convertir coordenadas polares a cartesianas
+    ############ FICHAS ############
+"""    # Inicializar fuente
+    font2 = pygame.font.SysFont("Arial", 24)
+
+    # Función para dibujar las fichas de cada jugador
+    y_offset = 50
+    for idx, (nom, data) in enumerate(jugadores.items()):
+        color = data["color"]
+        saldo = data["saldo"]
+        fitxes = data["fitxes"]
+
+        # Dibujar el nombre del jugador
+        text = font2.render(f"{nom} - Crèdit: {saldo}", True, BLACK)
+        screen.blit(text, (50, y_offset))
+        y_offset += 40
+
+        # Dibujar las fichas
+        x_offset = 150
+        for den, quantitat in fitxes.items():
+            for _ in range(quantitat):
+                dibuixar_fitxa(screen, x_offset, y_offset, color, den, font2)
+                x_offset += 80  # Desplazar las fichas para que no se solapen
+
+        y_offset += 100  # Espacio entre jugadores
+
+# Función para dibujar una ficha de póker
+def dibuixar_fitxa(screen, x, y, color, denominacio, font2):
+    # Círculo exterior
+    pygame.draw.circle(screen, BLACK, (x, y), 30)  # Borde negro
+    pygame.draw.circle(screen, color, (x, y), 28)  # Color principal
+
+    # Decoración de borde
+    for i in range(12):
+        angle = i * 30
+        rad = math.radians(angle)
+        dx = int(24 * math.cos(rad))
+        dy = int(24 * math.sin(rad))
+        pygame.draw.circle(screen, WHITE, (x + dx, y + dy), 4)
+
+    # Círculo interior
+    pygame.draw.circle(screen, WHITE, (x, y), 18)
+
+    # Número de denominación
+    den_text = font2.render(str(denominacio), True, color)
+    screen.blit(den_text, (x - den_text.get_width() // 2, y - den_text.get_height() // 2))"""
+
+# Función para convertir coordenadas polares a cartesianas
 def polar_to_cartesian(center, radius, angle_rad):
     x = center[0] + radius * math.cos(angle_rad)
     y = center[1] + radius * math.sin(angle_rad)

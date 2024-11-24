@@ -42,7 +42,7 @@ def e_ruleta(WIDTH, HEIGHT, nums, animating, spin_velocity):
             return False, animating, spin_velocity
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            if (WIDTH // 2 - 75 <= mouse_x <= WIDTH // 2 + 75) and (HEIGHT - 100 <= mouse_y <= HEIGHT - 50):
+            if (WIDTH // 7 + 175 + 70 <= mouse_x <=  WIDTH // 7 + 175 + 70 + 150) and (HEIGHT // 4 - 25 <= mouse_y <= HEIGHT // 4 - 25 + 50):
                 if not animating:
                     animating = True
                     spin_velocity = random.uniform(0.15, 0.2)

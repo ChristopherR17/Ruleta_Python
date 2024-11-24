@@ -1,17 +1,14 @@
 import math
-import os
-os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
 
-# Definir la finestra
+# Dimensiones de la ventana
 WIDTH = 1800
 HEIGHT = 950
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 pygame.init()
-clock = pygame.time.Clock()
 
-#Colores
+# Colores
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = (200, 200, 200)
@@ -21,33 +18,39 @@ GREEN = (0, 128, 0)
 RED = (200, 0, 0)
 GOLD = (212, 175, 55)
 
-#General
-nums = [0,1,2,3,4,5,6,7,8,9,10,12,11,14,13,16,15,18,17,19,20,21,22,23,24,25,26,27,28,30,29,32,31,34,33,36,35]
-angle = 0    
+# Configuración general
+nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 11, 14, 13, 16, 15, 18, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 30, 29, 32, 31, 34, 33, 36, 35]
+angle = 0
 counters = [0] * len(nums)
-center_x, center_y = WIDTH // 4, HEIGHT // 4  
-CENTRO = (WIDTH // 4, HEIGHT // 4)
+
+# Nueva posición de la ruleta
+CENTER_X, CENTER_Y = WIDTH // 7, HEIGHT // 4  # Más a la izquierda
+CENTRO = (CENTER_X, CENTER_Y)
 RADIO = 175
 
 CELL_WIDTH = 60
 CELL_HEIGHT = 60
-MARGIN = 10  
+MARGIN = 10
 
 # Números rojos y negros de la ruleta europea
 black_numbers = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35]
 red_numbers = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
 
+
 def get_color(number):
-        if number == 0:
-            return GREEN
-        elif number in red_numbers:
-            return RED
-        else:
-            return BLACK
+    if number == 0:
+        return GREEN
+    elif number in red_numbers:
+        return RED
+    else:
+        return BLACK
+
 
 def app_draw():
+    global angle
+
     ############ RULETA ############
-    # Pintar el fons de blanc
+    # Pintar el fondo
     screen.fill(GRAY)
 
     # Dibujar la base de madera
@@ -60,8 +63,7 @@ def app_draw():
     pygame.draw.circle(screen, BLACK, CENTRO, RADIO)
     pygame.draw.circle(screen, WHITE, CENTRO, RADIO, 5)
 
-
-    # Centro de la ruleta
+    # Dibujar los segmentos de la ruleta
     radi = 150
     slice_angle = 2 * math.pi / len(nums)
 
@@ -71,13 +73,12 @@ def app_draw():
         end_angle = start_angle + slice_angle
 
         # Coordenadas de los puntos
-        point1 = (CENTRO)
+        point1 = CENTRO
         point2 = polar_to_cartesian(CENTRO, radi, start_angle)
         point3 = polar_to_cartesian(CENTRO, radi, end_angle)
 
-        # Dibujar triángulos de la ruleta y aplicarle color
+        # Dibujar triángulos de la ruleta y aplicar color
         color = get_color(num)
-
         pygame.draw.polygon(screen, color, [point1, point2, point3])
 
         # Dibujar bordes
@@ -88,7 +89,7 @@ def app_draw():
         mid_angle = start_angle + slice_angle / 2
         text_x, text_y = polar_to_cartesian(CENTRO, radi * 0.7, mid_angle)
 
-        # Renderizar numeros de la ruleta
+        # Renderizar números de la ruleta
         font = pygame.font.SysFont(None, 24)
         text = f"{num}"
         text_surface = font.render(text, True, WHITE)
@@ -102,22 +103,26 @@ def app_draw():
 
     # Dibujar indicador
     pygame.draw.polygon(screen, RED, [
-        (center_x + radi - 15, center_y),
-        (center_x + radi + 40, center_y - 15),
-        (center_x + radi + 40, center_y + 15)
+        (CENTER_X + radi - 15, CENTER_Y),
+        (CENTER_X + radi + 40, CENTER_Y - 15),
+        (CENTER_X + radi + 40, CENTER_Y + 15)
     ])
     #Contorno del indicador
     pygame.draw.polygon(screen, GOLD, [
-        (center_x + radi - 15, center_y),
-        (center_x + radi + 40, center_y - 15),
-        (center_x + radi + 40, center_y + 15)
+        (CENTER_X + radi - 15, CENTER_Y),
+        (CENTER_X + radi + 40, CENTER_Y - 15),
+        (CENTER_X + radi + 40, CENTER_Y + 15)
     ], 3)
 
-    #Boton de giro
-    pygame.draw.rect(screen, BLUE, (WIDTH // 2 - 75, HEIGHT - 100, 150, 50))
+    # Dibujar el botón de girar al lado derecho de la ruleta
+    button_width = 150
+    button_height = 50
+    button_x = CENTER_X + RADIO + 70  # A la derecha de la ruleta
+    button_y = CENTER_Y - button_height // 2
+    pygame.draw.rect(screen, BLUE, (button_x, button_y, button_width, button_height))
     font = pygame.font.SysFont(None, 36)
     text_surface = font.render("GIRAR", True, WHITE)
-    text_rect = text_surface.get_rect(center=(WIDTH // 2, HEIGHT - 75))
+    text_rect = text_surface.get_rect(center=(button_x + button_width // 2, button_y + button_height // 2))
     screen.blit(text_surface, text_rect)
 
     ############ MESA ############

@@ -23,7 +23,7 @@ def main():
         angle, spin_velocity, animating = run_and_events.r_ruleta(dibujos.nums, angle, spin_velocity, animating)
 
         # Dibujar la ruleta y la mesa con el ángulo actualizado
-        dibujos.angle = angle  # Asegúrate de que `dibujos` use este ángulo
+        dibujos.angle = angle
         dibujos.app_draw()
 
         clock.tick(60)

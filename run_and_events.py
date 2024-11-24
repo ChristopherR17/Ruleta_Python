@@ -14,18 +14,18 @@ target_angle = 0
 animation_start_time = 0
 spin_velocity = 0  
 
+#Calculos
 def r_ruleta(nums, angle, spin_velocity, animating):
     if not animating:
         return angle, spin_velocity, animating
     
-    # La desaceleración
     if spin_velocity > 0:
         angle += spin_velocity
         spin_velocity -= deceleration
     else:
         animating = False
-        # Resultado
-        normalized_angle = -angle % (2 * math.pi)  # Normalizar a un rango de [0, 2π]
+
+        normalized_angle = -angle % (2 * math.pi) 
         slice_angle = 2 * math.pi / len(nums)
         result_index = int(normalized_angle // slice_angle)
         result_number = nums[result_index]
@@ -33,9 +33,7 @@ def r_ruleta(nums, angle, spin_velocity, animating):
     
     return angle, spin_velocity, animating
 
-
-
-# Gestionar events
+#Eventos
 def e_ruleta(WIDTH, HEIGHT, nums, animating, spin_velocity):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:

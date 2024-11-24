@@ -97,7 +97,7 @@ def main():
         agregar_tirada(estadisticas, resultado, creditos, apuestas)
 
     # Bucle principal
-    reloj = pygame.time.Clock()
+    clock = pygame.time.Clock()
     ejecutando = True
     while ejecutando:
         for evento in pygame.event.get():
@@ -110,7 +110,7 @@ def main():
 
         # Actualizar pantalla
         pygame.display.flip()
-        reloj.tick(60)
+        clock.tick(60)
 
     pygame.quit()
     sys.exit()

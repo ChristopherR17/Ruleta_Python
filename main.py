@@ -16,13 +16,13 @@ def main():
     running = True
 
     while running:
-        # Procesar eventos
+        #Eventod
         running, animating, spin_velocity = run_and_events.e_ruleta(WIDTH, HEIGHT, dibujos.nums, animating, spin_velocity)
         
-        # Actualizar estado de la ruleta
+        #Calculos de la ruleta
         angle, spin_velocity, animating = run_and_events.r_ruleta(dibujos.nums, angle, spin_velocity, animating)
 
-        # Dibujar la ruleta y la mesa con el ángulo actualizado
+        # Dibujar la ruleta y la mesa
         dibujos.angle = angle
         dibujos.app_draw()
 

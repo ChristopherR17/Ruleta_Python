@@ -24,7 +24,7 @@ angle = 0
 counters = [0] * len(nums)
 
 # Nueva posición de la ruleta
-CENTER_X, CENTER_Y = WIDTH // 7, HEIGHT // 4  # Más a la izquierda
+CENTER_X, CENTER_Y = WIDTH // 7, HEIGHT // 4  
 CENTRO = (CENTER_X, CENTER_Y)
 RADIO = 175
 
@@ -90,7 +90,7 @@ def app_draw():
         text_x, text_y = polar_to_cartesian(CENTRO, radi * 0.7, mid_angle)
 
         # Renderizar números de la ruleta
-        font = pygame.font.SysFont(None, 24)
+        font = pygame.font.SysFont(None, 20)
         text = f"{num}"
         text_surface = font.render(text, True, WHITE)
         text_rect = text_surface.get_rect(center=(text_x, text_y))
@@ -101,7 +101,7 @@ def app_draw():
     #Anillo exterior
     pygame.draw.circle(screen, GOLD, point1, radi+2, 5)
 
-    # Dibujar indicador
+    #Dibujar indicador
     pygame.draw.polygon(screen, RED, [
         (CENTER_X + radi - 15, CENTER_Y),
         (CENTER_X + radi + 40, CENTER_Y - 15),
@@ -114,10 +114,10 @@ def app_draw():
         (CENTER_X + radi + 40, CENTER_Y + 15)
     ], 3)
 
-    # Dibujar el botón de girar al lado derecho de la ruleta
+    #Boton de giro de la ruleta
     button_width = 150
     button_height = 50
-    button_x = CENTER_X + RADIO + 70  # A la derecha de la ruleta
+    button_x = CENTER_X + RADIO + 70 
     button_y = CENTER_Y - button_height // 2
     pygame.draw.rect(screen, BLUE, (button_x, button_y, button_width, button_height))
     font = pygame.font.SysFont(None, 36)
@@ -140,15 +140,15 @@ def app_draw():
         screen.blit(text_surface, text_rect)
 
     # Dibujar números de la tabla
-    for row in range(3):  # 3 filas
-        for col in range(12):  # 12 columnas
+    for row in range(3): 
+        for col in range(12): 
             number = (2 - row) + col * 3 + 1
             if number > 36:
-                break  # Evitar dibujar números mayores a 36
+                break  
             rect = pygame.Rect(start_x + col * CELL_WIDTH, start_y + row * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT)
             color = get_color(number)
-            pygame.draw.rect(screen, color, rect)  # Fondo del color correspondiente
-            pygame.draw.rect(screen, WHITE, rect, width=2)  # Bordes blancos
+            pygame.draw.rect(screen, color, rect)  
+            pygame.draw.rect(screen, WHITE, rect, width=2)  
             draw_text_centered(str(number), rect, WHITE if color != WHITE else BLACK, screen)
 
     # Casilla del número 0
@@ -172,7 +172,7 @@ def app_draw():
         rect = pygame.Rect(column_start_x, start_y + i * CELL_HEIGHT, CELL_WIDTH * 2, CELL_HEIGHT)
         pygame.draw.rect(screen, GRAY, rect)
         pygame.draw.rect(screen, WHITE, rect, width=2)
-        draw_text_centered(f"Columna {i + 1}", rect, BLACK, screen)
+        draw_text_centered(f"Columna {3 - i}", rect, BLACK, screen)
 
     # Zona de banca
     banca_rect = pygame.Rect(WIDTH - 120, start_y - 70, 100, 50)

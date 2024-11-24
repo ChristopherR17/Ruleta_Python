@@ -3,7 +3,6 @@ import os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
 import sys
-import utils
 import random
 import time
 
@@ -44,7 +43,6 @@ start_angle = 0
 target_angle = 0
 animation_start_time = 0
 animation_duration = 5  
-FPS = 60 
 spin_velocity = 0    
 deceleration = 0.001    
 
@@ -145,13 +143,12 @@ def app_draw():
         # Dibujar triángulos de la ruleta y aplicarle color
         if num == 0:
             color = GREEN
-            pygame.draw.polygon(screen, color, [point1, point2, point3])
         elif num in black_nums:
             color = BLACK
-            pygame.draw.polygon(screen, color, [point1, point2, point3])
         else:
             color = RED
-            pygame.draw.polygon(screen, color, [point1, point2, point3])
+
+        pygame.draw.polygon(screen, color, [point1, point2, point3])
 
         # Dibujar bordes
         pygame.draw.line(screen, BLACK, point1, point2, 3)
@@ -193,12 +190,9 @@ def app_draw():
     text_rect = text_surface.get_rect(center=(WIDTH // 2, HEIGHT - 75))
     screen.blit(text_surface, text_rect)
 
-<<<<<<< Updated upstream
     # Actualitzar el dibuix a la finestra
     pygame.display.update()
 
-=======
->>>>>>> Stashed changes
 # Función para convertir coordenadas polares a cartesianas
 def polar_to_cartesian(center, radius, angle_rad):
     x = center[0] + radius * math.cos(angle_rad)

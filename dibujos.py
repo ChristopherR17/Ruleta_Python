@@ -2,9 +2,6 @@ import math
 import os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
-import sys
-import random
-import time
 
 # Definir la finestra
 WIDTH = 1800
@@ -20,7 +17,7 @@ BLACK = (0, 0, 0)
 GRAY = (200, 200, 200)
 BLUE = (70, 130, 180)
 BROWN = (139, 69, 19)
-GREEN = (0, 200, 0)
+GREEN = (0, 128, 0)
 RED = (200, 0, 0)
 GOLD = (212, 175, 55)
 
@@ -39,6 +36,14 @@ MARGIN = 10
 # Números rojos y negros de la ruleta europea
 black_numbers = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35]
 red_numbers = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
+
+def get_color(number):
+        if number == 0:
+            return GREEN
+        elif number in red_numbers:
+            return RED
+        else:
+            return BLACK
 
 def app_draw():
     ############ RULETA ############
@@ -71,15 +76,9 @@ def app_draw():
         point3 = polar_to_cartesian(CENTRO, radi, end_angle)
 
         # Dibujar triángulos de la ruleta y aplicarle color
-        if num == 0:
-            color = GREEN
-            pygame.draw.polygon(screen, color, [point1, point2, point3])
-        elif num in black_numbers:
-            color = BLACK
-            pygame.draw.polygon(screen, color, [point1, point2, point3])
-        else:
-            color = RED
-            pygame.draw.polygon(screen, color, [point1, point2, point3])
+        color = get_color(num)
+
+        pygame.draw.polygon(screen, color, [point1, point2, point3])
 
         # Dibujar bordes
         pygame.draw.line(screen, BLACK, point1, point2, 3)
@@ -134,14 +133,6 @@ def app_draw():
         text_surface = font.render(text, True, color)
         text_rect = text_surface.get_rect(center=(rect.x + rect.width / 2, rect.y + rect.height / 2))
         screen.blit(text_surface, text_rect)
-
-    def get_color(number):
-        if number == 0:
-            return GREEN
-        elif number in red_numbers:
-            return RED
-        elif number in black_numbers:
-            return BLACK
 
     # Dibujar números de la tabla
     for row in range(3):  # 3 filas

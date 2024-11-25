@@ -200,7 +200,7 @@ def dibujar_fichas():
         # Dibujar el nombre del jugador encima de las fichas
         text = font2.render(f"{nom} - Crèdit: {saldo}", True, BLACK)
         text_x = x_offset_start - 200
-        text_y = y_offset - 30
+        text_y = y_offset - 60
         screen.blit(text, (text_x, text_y))
 
         # Dibujar las fichas

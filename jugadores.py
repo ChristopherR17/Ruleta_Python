@@ -1,11 +1,10 @@
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-RED = (255, 0, 0)
 BLUE = (0, 0, 255)
+ORANGE = (255,128,0)
+PURPLE = (138, 43, 226)
 
 jugadores = {
     "Taronja": {
-        "color": (255,128,0), 
+        "color": ORANGE, 
         "saldo": 100,
         "fitxes": {
             5: 2,  
@@ -16,7 +15,7 @@ jugadores = {
         }
     },
     "Lila": {
-        "color": (138, 43, 226), 
+        "color": PURPLE, 
         "saldo": 100,
         "fitxes": {
             5: 2,  

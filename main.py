@@ -20,7 +20,7 @@ def main():
     dibujos.jugadores = players.jugadores 
 
     while running:
-        running, animating, spin_velocity = run_and_events.e_ruleta(WIDTH, HEIGHT, dibujos.nums, animating, spin_velocity)
+        running, animating, spin_velocity = run_and_events.e_ruleta(WIDTH, HEIGHT, animating, spin_velocity)
         
         angle, spin_velocity, animating = run_and_events.r_ruleta(dibujos.nums, angle, spin_velocity, animating)
 

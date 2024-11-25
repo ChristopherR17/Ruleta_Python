@@ -40,7 +40,7 @@ red_numbers = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36
 def app_draw():
     global angle
 
-    screen.fill(GRAY)
+    screen.fill((34, 139, 34))
 
     dibujar_ruleta()
     dibujar_mesa()
@@ -188,46 +188,70 @@ def get_color(number):
 
 ############ FICHAS ############
 def dibujar_fichas():
-    font2 = pygame.font.SysFont("Arial", 24)
-    y_offset = HEIGHT - 200 
-    x_offset_start = WIDTH - 200 
+    font2 = pygame.font.SysFont("Arial", 15)
+    y_offset = HEIGHT - 200  
+    x_offset_start = WIDTH - 400  
 
-    for idx, (nom, data) in enumerate(jugadores.items()):
+    for nom, data in jugadores.items():
         color = data["color"]
         saldo = data["saldo"]
         fitxes = data["fitxes"]
 
-        # Dibujar el nombre del jugador encima de las fichas
+        # Dibujar la caja para el jugador
+        box_x = x_offset_start - 50
+        box_y = y_offset - 100
+        box_width = 300
+        box_height = 150
+        pygame.draw.rect(screen, (200, 200, 200), (box_x, box_y, box_width, box_height)) 
+        pygame.draw.rect(screen, color, (box_x, box_y, box_width, box_height), 2)
+
+        # Dibujar el nombre del jugador y el saldo
         text = font2.render(f"{nom} - Crèdit: {saldo}", True, BLACK)
-        text_x = x_offset_start - 200
-        text_y = y_offset - 60
-        screen.blit(text, (text_x, text_y))
+        screen.blit(text, (box_x + 10, box_y + 10))
 
-        # Dibujar las fichas
-        x_offset = x_offset_start
-        for den, quantitat in fitxes.items():
-            for _ in range(quantitat):
-                dibuixar_fitxa(screen, x_offset, y_offset, color, den, font2)
-                x_offset -= 80 
+        # Dibujar la lista de fichas
+        y_text = box_y + 40
+        for den, cantidad in sorted(fitxes.items(), reverse=True):  
+            ficha_texto = font2.render(f"Fichas de {den}: {cantidad}", True, BLACK)
+            screen.blit(ficha_texto, (box_x + 10, y_text))
+            y_text += 20
 
-        y_offset -= 100  
+        # Dibujar las fichas en filas organizadas
+        y_fichas = y_offset
+        x_fichas_start = x_offset_start
+        for den, cantidad in sorted(fitxes.items(), reverse=True): 
+            x_fichas = x_fichas_start
+            for _ in range(cantidad):
+                dibuixar_fitxa(screen, x_fichas, y_fichas, color, den, font2)
+                x_fichas -= 50  
+            y_fichas -= 40 
+
+        x_offset_start -= 400  
+
 
 # Función para dibujar una ficha de póker
 def dibuixar_fitxa(screen, x, y, color, denominacio, font2):
+    # Tamaños reducidos
+    radio_exterior = 20  # Radio del círculo exterior
+    radio_interior = 18  # Radio del círculo exterior de color
+    radio_borde_decoracion = 14  # Radio para la decoración del borde
+    radio_centro = 10  # Radio del círculo blanco interno
+    radio_decoracion = 2  # Radio de los círculos decorativos del borde
+
     # Círculo exterior
-    pygame.draw.circle(screen, BLACK, (x, y), 30) 
-    pygame.draw.circle(screen, color, (x, y), 28) 
+    pygame.draw.circle(screen, BLACK, (x, y), radio_exterior)
+    pygame.draw.circle(screen, color, (x, y), radio_interior)
 
     # Decoración de borde
     for i in range(12):
         angle = i * 30
         rad = math.radians(angle)
-        dx = int(24 * math.cos(rad))
-        dy = int(24 * math.sin(rad))
-        pygame.draw.circle(screen, WHITE, (x + dx, y + dy), 4)
+        dx = int(radio_borde_decoracion * math.cos(rad))
+        dy = int(radio_borde_decoracion * math.sin(rad))
+        pygame.draw.circle(screen, WHITE, (x + dx, y + dy), radio_decoracion)
 
     # Círculo interior
-    pygame.draw.circle(screen, WHITE, (x, y), 18)
+    pygame.draw.circle(screen, WHITE, (x, y), radio_centro)
 
     # Número de denominación
     den_text = font2.render(str(denominacio), True, color)

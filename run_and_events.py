@@ -34,7 +34,7 @@ def r_ruleta(nums, angle, spin_velocity, animating):
     return angle, spin_velocity, animating
 
 #Eventos
-def e_ruleta(WIDTH, HEIGHT, nums, animating, spin_velocity):
+def e_ruleta(WIDTH, HEIGHT, animating, spin_velocity):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             return False, animating, spin_velocity

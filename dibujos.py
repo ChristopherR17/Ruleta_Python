@@ -1,5 +1,6 @@
 import math
 import pygame
+import utils
 
 # Dimensiones de la ventana
 WIDTH = 1800
@@ -29,6 +30,7 @@ CENTER_X, CENTER_Y = WIDTH // 7, HEIGHT // 4
 CENTRO = (CENTER_X, CENTER_Y)
 RADIO = 175
 
+#Tamaño de la mesa
 CELL_WIDTH = 60
 CELL_HEIGHT = 60
 MARGIN = 10
@@ -38,9 +40,9 @@ black_numbers = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33,
 red_numbers = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
 
 def app_draw():
-    global angle
-
     screen.fill((34, 139, 34))
+
+    utils.draw_grid(pygame, screen, 50)
 
     dibujar_ruleta()
     dibujar_mesa()
@@ -122,6 +124,11 @@ def dibujar_ruleta():
     text_rect = text_surface.get_rect(center=(button_x + button_width // 2, button_y + button_height // 2))
     screen.blit(text_surface, text_rect)
 
+def polar_to_cartesian(center, radius, angle_rad):
+    x = center[0] + radius * math.cos(angle_rad)
+    y = center[1] + radius * math.sin(angle_rad)
+    return x, y
+
 ############ MESA ############
 def dibujar_mesa():
     table_width = CELL_WIDTH * 12 + CELL_WIDTH + MARGIN * 3  
@@ -200,8 +207,8 @@ def dibujar_fichas():
         # Dibujar la caja para el jugador
         box_x = x_offset_start - 50
         box_y = y_offset - 100
-        box_width = 300
-        box_height = 150
+        box_width = 355
+        box_height = 205
         pygame.draw.rect(screen, (200, 200, 200), (box_x, box_y, box_width, box_height)) 
         pygame.draw.rect(screen, color, (box_x, box_y, box_width, box_height), 2)
 
@@ -219,7 +226,7 @@ def dibujar_fichas():
         # Dibujar las fichas en filas organizadas
         y_fichas = y_offset
         x_fichas_start = x_offset_start
-        for den, cantidad in sorted(fitxes.items(), reverse=True): 
+        for den, cantidad in sorted(fitxes.items()): 
             x_fichas = x_fichas_start
             for _ in range(cantidad):
                 dibuixar_fitxa(screen, x_fichas, y_fichas, color, den, font2)
@@ -228,19 +235,22 @@ def dibujar_fichas():
 
         x_offset_start -= 400  
 
-
 # Función para dibujar una ficha de póker
 def dibuixar_fitxa(screen, x, y, color, denominacio, font2):
-    # Tamaños reducidos
-    radio_exterior = 20  # Radio del círculo exterior
-    radio_interior = 18  # Radio del círculo exterior de color
-    radio_borde_decoracion = 14  # Radio para la decoración del borde
-    radio_centro = 10  # Radio del círculo blanco interno
-    radio_decoracion = 2  # Radio de los círculos decorativos del borde
+    
+    radio_exterior = 20  
+    radio_interior = 18  
+    radio_borde_decoracion = 14
+    radio_centro = 10  
+    radio_decoracion = 2 
+
+    #Mover la posicion de las fichas
+    Aug_x = 280
+    Aug_y = 82
 
     # Círculo exterior
-    pygame.draw.circle(screen, BLACK, (x, y), radio_exterior)
-    pygame.draw.circle(screen, color, (x, y), radio_interior)
+    pygame.draw.circle(screen, BLACK, (x + Aug_x, y + Aug_y), radio_exterior)
+    pygame.draw.circle(screen, color, (x+ Aug_x, y + Aug_y), radio_interior)
 
     # Decoración de borde
     for i in range(12):
@@ -248,17 +258,14 @@ def dibuixar_fitxa(screen, x, y, color, denominacio, font2):
         rad = math.radians(angle)
         dx = int(radio_borde_decoracion * math.cos(rad))
         dy = int(radio_borde_decoracion * math.sin(rad))
-        pygame.draw.circle(screen, WHITE, (x + dx, y + dy), radio_decoracion)
+        pygame.draw.circle(screen, WHITE, (x + dx + Aug_x, y + dy + Aug_y), radio_decoracion)
 
     # Círculo interior
-    pygame.draw.circle(screen, WHITE, (x, y), radio_centro)
+    pygame.draw.circle(screen, WHITE, (x + Aug_x, y + Aug_y), radio_centro)
 
     # Número de denominación
     den_text = font2.render(str(denominacio), True, color)
-    screen.blit(den_text, (x - den_text.get_width() // 2, y - den_text.get_height() // 2))
+    screen.blit(den_text, (x - den_text.get_width() // 2 + Aug_x, y - den_text.get_height() // 2 + Aug_y))
 
-def polar_to_cartesian(center, radius, angle_rad):
-    x = center[0] + radius * math.cos(angle_rad)
-    y = center[1] + radius * math.sin(angle_rad)
-    return x, y
+
 

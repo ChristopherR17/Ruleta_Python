@@ -15,6 +15,7 @@ animation_start_time = 0
 spin_velocity = 0  
 
 #Calculos
+#RULETA
 def r_ruleta(nums, angle, spin_velocity, animating):
     if not animating:
         return angle, spin_velocity, animating
@@ -33,7 +34,12 @@ def r_ruleta(nums, angle, spin_velocity, animating):
     
     return angle, spin_velocity, animating
 
+#FICHAS
+def r_fichas():
+    pass
+
 #Eventos
+#RULETA
 def e_ruleta(WIDTH, HEIGHT, animating, spin_velocity):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -45,3 +51,7 @@ def e_ruleta(WIDTH, HEIGHT, animating, spin_velocity):
                     animating = True
                     spin_velocity = random.uniform(0.15, 0.2)
     return True, animating, spin_velocity
+
+#FICHAS
+def e_fichas():
+    pass

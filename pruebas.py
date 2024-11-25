@@ -39,30 +39,53 @@ def dibuixar_fitxa(screen, x, y, color, denominacio):
     den_text = font2.render(str(denominacio), True, color)
     screen.blit(den_text, (x - den_text.get_width() // 2, y - den_text.get_height() // 2))
 
-def dibuixar_fitxes():
-# Ajustar posición de las fichas en la esquina inferior derecha
-    y_offset = HEIGHT - 200  # Distancia desde el borde inferior
-    x_offset_start = WIDTH - 200  # Distancia desde el borde derecho
+def dibujar_fichas():
+    font2 = pygame.font.SysFont("Arial", 15)
+    y_offset = HEIGHT - 200  # Posición vertical inicial para las cajas
+    x_offset_start = WIDTH - 400  # Posición horizontal inicial para las cajas
 
-    for idx, (nom, data) in enumerate(jugadores.items()):
+    for nom, data in jugadores.items():
         color = data["color"]
         saldo = data["saldo"]
         fitxes = data["fitxes"]
 
-        # Dibujar el nombre del jugador encima de las fichas
+        # Dibujar la caja para el jugador
+        box_x = x_offset_start - 50
+        box_y = y_offset - 100
+        box_width = 300
+        box_height = 150
+        pygame.draw.rect(screen, (200, 200, 200), (box_x, box_y, box_width, box_height))  # Fondo
+        pygame.draw.rect(screen, BLACK, (box_x, box_y, box_width, box_height), 2)  # Borde
+
+        # Dibujar el nombre del jugador y el saldo
         text = font2.render(f"{nom} - Crèdit: {saldo}", True, BLACK)
-        text_x = x_offset_start - 200  # Ajustar para centrar el texto
-        text_y = y_offset - 30  # Encima de las fichas
-        screen.blit(text, (text_x, text_y))
+        screen.blit(text, (box_x + 10, box_y + 10))
 
-        # Dibujar las fichas
-        x_offset = x_offset_start
-        for den, quantitat in fitxes.items():
-            for _ in range(quantitat):
-                dibuixar_fitxa(screen, x_offset, y_offset, color, den, font2)
-                x_offset -= 80  # Mover hacia la izquierda las fichas
+        # Dibujar la lista de fichas
+        y_text = box_y + 40
+        for den, cantidad in sorted(fitxes.items(), reverse=True):  # Ordenar por denominación descendente
+            ficha_texto = font2.render(f"Fichas de {den}: {cantidad}", True, BLACK)
+            screen.blit(ficha_texto, (box_x + 10, y_text))
+            y_text += 20
 
-        y_offset -= 100  # Mover hacia arriba para el siguiente jugador
+        # Dibujar las fichas en filas dentro de la caja
+        y_fichas = box_y + 70  # Iniciar las fichas debajo del texto
+        x_fichas_start = box_x + 20  # Espacio inicial dentro de la caja
+        espacio_horizontal = 40  # Espacio entre fichas horizontalmente
+        espacio_vertical = 30  # Espacio entre fichas verticalmente
+
+        for den, cantidad in sorted(fitxes.items(), reverse=True):
+            x_fichas = x_fichas_start
+            for i in range(cantidad):
+                # Cambiar de fila si no hay espacio horizontal
+                if x_fichas + 20 > box_x + box_width - 20:
+                    x_fichas = x_fichas_start
+                    y_fichas += espacio_vertical
+
+                dibuixar_fitxa(screen, x_fichas, y_fichas, color, den, font2)
+                x_fichas += espacio_horizontal
+
+        x_offset_start -= 400  # Moverse a la posición de la siguiente caja
 
 # Datos de ejemplo para jugadores
 jugadores = {

@@ -22,6 +22,7 @@ GOLD = (212, 175, 55)
 nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 11, 14, 13, 16, 15, 18, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 30, 29, 32, 31, 34, 33, 36, 35]
 angle = 0
 counters = [0] * len(nums)
+jugadores = {}
 
 #Posicion de la ruleta
 CENTER_X, CENTER_Y = WIDTH // 7, HEIGHT // 4  
@@ -36,22 +37,19 @@ MARGIN = 10
 black_numbers = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35]
 red_numbers = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
 
-
-def get_color(number):
-    if number == 0:
-        return GREEN
-    elif number in red_numbers:
-        return RED
-    else:
-        return BLACK
-
-def app_draw(jugadores):
+def app_draw():
     global angle
 
-    ############ RULETA ############
-    # Pintar el fondo
     screen.fill(GRAY)
 
+    dibujar_ruleta()
+    dibujar_mesa()
+    dibujar_fichas()
+
+    pygame.display.update()
+
+############ RULETA ############
+def dibujar_ruleta():
     # Dibujar la base de madera
     pygame.draw.circle(screen, BROWN, CENTRO, RADIO + 50)
 
@@ -124,7 +122,8 @@ def app_draw(jugadores):
     text_rect = text_surface.get_rect(center=(button_x + button_width // 2, button_y + button_height // 2))
     screen.blit(text_surface, text_rect)
 
-    ############ MESA ############
+############ MESA ############
+def dibujar_mesa():
     table_width = CELL_WIDTH * 12 + CELL_WIDTH + MARGIN * 3  
     start_x = WIDTH - table_width - 70  
     start_y = 100  
@@ -178,38 +177,46 @@ def app_draw(jugadores):
     pygame.draw.rect(screen, WHITE, banca_rect, width=2)
     draw_text_centered("Banca", banca_rect, WHITE, screen)
 
-    pygame.display.update()
+#Funcion para devolver el color segun el numero
+def get_color(number):
+    if number == 0:
+        return GREEN
+    elif number in red_numbers:
+        return RED
+    else:
+        return BLACK
 
-    ############ FICHAS ############
-"""    # Inicializar fuente
+############ FICHAS ############
+def dibujar_fichas():
     font2 = pygame.font.SysFont("Arial", 24)
+    y_offset = HEIGHT - 200 
+    x_offset_start = WIDTH - 200 
 
-    # Función para dibujar las fichas de cada jugador
-    y_offset = 50
     for idx, (nom, data) in enumerate(jugadores.items()):
         color = data["color"]
         saldo = data["saldo"]
         fitxes = data["fitxes"]
 
-        # Dibujar el nombre del jugador
+        # Dibujar el nombre del jugador encima de las fichas
         text = font2.render(f"{nom} - Crèdit: {saldo}", True, BLACK)
-        screen.blit(text, (50, y_offset))
-        y_offset += 40
+        text_x = x_offset_start - 200
+        text_y = y_offset - 30
+        screen.blit(text, (text_x, text_y))
 
         # Dibujar las fichas
-        x_offset = 150
+        x_offset = x_offset_start
         for den, quantitat in fitxes.items():
             for _ in range(quantitat):
                 dibuixar_fitxa(screen, x_offset, y_offset, color, den, font2)
-                x_offset += 80  # Desplazar las fichas para que no se solapen
+                x_offset -= 80 
 
-        y_offset += 100  # Espacio entre jugadores
+        y_offset -= 100  
 
 # Función para dibujar una ficha de póker
 def dibuixar_fitxa(screen, x, y, color, denominacio, font2):
     # Círculo exterior
-    pygame.draw.circle(screen, BLACK, (x, y), 30)  # Borde negro
-    pygame.draw.circle(screen, color, (x, y), 28)  # Color principal
+    pygame.draw.circle(screen, BLACK, (x, y), 30) 
+    pygame.draw.circle(screen, color, (x, y), 28) 
 
     # Decoración de borde
     for i in range(12):
@@ -224,9 +231,8 @@ def dibuixar_fitxa(screen, x, y, color, denominacio, font2):
 
     # Número de denominación
     den_text = font2.render(str(denominacio), True, color)
-    screen.blit(den_text, (x - den_text.get_width() // 2, y - den_text.get_height() // 2))"""
+    screen.blit(den_text, (x - den_text.get_width() // 2, y - den_text.get_height() // 2))
 
-# Función para convertir coordenadas polares a cartesianas
 def polar_to_cartesian(center, radius, angle_rad):
     x = center[0] + radius * math.cos(angle_rad)
     y = center[1] + radius * math.sin(angle_rad)

@@ -110,10 +110,38 @@
 
 #sujeto a cambios
 # Diccionario global para almacenar la información de los jugadores
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+BLUE = (0, 0, 255)
+
 jugadores = {
-    "taronja": {"saldo": 100, "fichas": {5: 2, 10: 2, 20: 1, 50: 1, 100: 0}},
-    "lila": {"saldo": 100, "fichas": {5: 2, 10: 2, 20: 1, 50: 1, 100: 0}},
-    "blau": {"saldo": 100, "fichas": {5: 2, 10: 2, 20: 1, 50: 1, 100: 0}},
+    "Taronja": {
+        "color": (255,128,0), #Naranja # Color de las fichas
+        "saldo": 100,
+        "fitxes": {
+            5: 3,  # 3 fichas de 5
+            10: 2, # 2 fichas de 10
+            20: 1, # 1 ficha de 20
+        }
+    },
+    "Lila": {
+        "color": (138, 43, 226),  # Color lila
+        "saldo": 120,
+        "fitxes": {
+            5: 2,  # 2 fichas de 5
+            50: 1, # 1 ficha de 50
+            100: 1, # 1 ficha de 100
+        }
+    },
+    "Blau": {
+        "color": BLUE,
+        "saldo": 150,
+        "fitxes": {
+            10: 3,  # 3 fichas de 10
+            50: 1,  # 1 ficha de 50
+        }
+    }
 }
 
 def apostar(jugador, valor_ficha, cantidad, espacio_apuesta):

@@ -16,7 +16,7 @@ RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 
 # Inicializar fuente
-font = pygame.font.SysFont("Arial", 24)
+font2 = pygame.font.SysFont("Arial", 24)
 
 # Función para dibujar una ficha de póker
 def dibuixar_fitxa(screen, x, y, color, denominacio):
@@ -36,33 +36,36 @@ def dibuixar_fitxa(screen, x, y, color, denominacio):
     pygame.draw.circle(screen, WHITE, (x, y), 18)
 
     # Número de denominación
-    den_text = font.render(str(denominacio), True, color)
+    den_text = font2.render(str(denominacio), True, color)
     screen.blit(den_text, (x - den_text.get_width() // 2, y - den_text.get_height() // 2))
 
-# Función para dibujar las fichas de cada jugador
-def dibuixar_fitxes(screen, players):
-    y_offset = 50
-    for idx, (nom, data) in enumerate(players.items()):
+def dibuixar_fitxes():
+# Ajustar posición de las fichas en la esquina inferior derecha
+    y_offset = HEIGHT - 200  # Distancia desde el borde inferior
+    x_offset_start = WIDTH - 200  # Distancia desde el borde derecho
+
+    for idx, (nom, data) in enumerate(jugadores.items()):
         color = data["color"]
         saldo = data["saldo"]
         fitxes = data["fitxes"]
 
-        # Dibujar el nombre del jugador
-        text = font.render(f"{nom} - Crèdit: {saldo}", True, BLACK)
-        screen.blit(text, (50, y_offset))
-        y_offset += 40
+        # Dibujar el nombre del jugador encima de las fichas
+        text = font2.render(f"{nom} - Crèdit: {saldo}", True, BLACK)
+        text_x = x_offset_start - 200  # Ajustar para centrar el texto
+        text_y = y_offset - 30  # Encima de las fichas
+        screen.blit(text, (text_x, text_y))
 
         # Dibujar las fichas
-        x_offset = 150
+        x_offset = x_offset_start
         for den, quantitat in fitxes.items():
             for _ in range(quantitat):
-                dibuixar_fitxa(screen, x_offset, y_offset, color, den)
-                x_offset += 80  # Desplazar las fichas para que no se solapen
+                dibuixar_fitxa(screen, x_offset, y_offset, color, den, font2)
+                x_offset -= 80  # Mover hacia la izquierda las fichas
 
-        y_offset += 100  # Espacio entre jugadores
+        y_offset -= 100  # Mover hacia arriba para el siguiente jugador
 
 # Datos de ejemplo para jugadores
-players = {
+jugadores = {
     "Taronja": {
         "color": (255,128,0), #Naranja # Color de las fichas
         "saldo": 100,
@@ -103,7 +106,7 @@ while running:
     screen.fill(WHITE)
 
     # Dibujar fichas de los jugadores
-    dibuixar_fitxes(screen, players)
+    dibuixar_fitxes()
 
     # Actualizar pantalla
     pygame.display.update()

@@ -1,10 +1,11 @@
 import pygame
 import sys
-import dibujos
-import run_and_events
-import jugadores
+import dibujos 
+import run_and_events 
+import jugadores as players  
 
 pygame.init()
+
 clock = pygame.time.Clock()
 WIDTH, HEIGHT = dibujos.WIDTH, dibujos.HEIGHT
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -16,21 +17,21 @@ def main():
     animating = False
     running = True
 
+    dibujos.jugadores = players.jugadores 
+
     while running:
-        #Eventod
         running, animating, spin_velocity = run_and_events.e_ruleta(WIDTH, HEIGHT, dibujos.nums, animating, spin_velocity)
         
-        #Calculos de la ruleta
         angle, spin_velocity, animating = run_and_events.r_ruleta(dibujos.nums, angle, spin_velocity, animating)
 
-        # Dibujar la ruleta y la mesa
         dibujos.angle = angle
-        dibujos.app_draw(jugadores.jugadores)
+        dibujos.app_draw() 
 
         clock.tick(60)
 
     pygame.quit()
     sys.exit()
+
 
 if __name__ == "__main__":
     main()

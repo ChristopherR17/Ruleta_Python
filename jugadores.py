@@ -7,7 +7,7 @@ jugadores = {
         "color": ORANGE, 
         "saldo": 100,
         "fitxes": {
-            100: 1,  
+            100: 0,  
             50: 1, 
             20: 1, 
             10: 2,
@@ -18,7 +18,7 @@ jugadores = {
         "color": PURPLE, 
         "saldo": 100,
         "fitxes": {
-            100: 1,  
+            100: 0,  
             50: 1, 
             20: 1, 
             10: 2,

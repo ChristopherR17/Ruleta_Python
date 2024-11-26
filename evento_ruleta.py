@@ -13,9 +13,7 @@ target_angle = 0
 animation_start_time = 0
 spin_velocity = 0  
 
-#Calculos
-#RULETA
-def r_ruleta(nums, angle, spin_velocity, animating):
+def calculos(nums, angle, spin_velocity, animating):
     if not animating:
         return angle, spin_velocity, animating
     
@@ -33,9 +31,7 @@ def r_ruleta(nums, angle, spin_velocity, animating):
     
     return angle, spin_velocity, animating
 
-#Eventos
-#RULETA
-def e_ruleta(WIDTH, HEIGHT, animating, spin_velocity):
+def eventos(WIDTH, HEIGHT, animating, spin_velocity):
     button_x = WIDTH // 7 + 175 + 70
     button_y = HEIGHT // 4 - 25
 

@@ -1,8 +1,9 @@
 import pygame
 import sys
 import dibujos 
-import run_and_events 
+import eventos_ruleta as e_ruleta
 import jugadores as players  
+import eventos_fichas as e_fichas
 
 pygame.init()
 
@@ -20,9 +21,9 @@ def main():
     dibujos.jugadores = players.jugadores 
 
     while running:
-        running, animating, spin_velocity = run_and_events.e_ruleta(WIDTH, HEIGHT, animating, spin_velocity)
+        running, animating, spin_velocity = e_ruleta.eventos(WIDTH, HEIGHT, animating, spin_velocity)
         
-        angle, spin_velocity, animating = run_and_events.r_ruleta(dibujos.nums, angle, spin_velocity, animating)
+        angle, spin_velocity, animating = e_ruleta.calculos(dibujos.nums, angle, spin_velocity, animating)
 
         dibujos.angle = angle
         dibujos.app_draw() 

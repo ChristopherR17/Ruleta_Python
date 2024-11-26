@@ -52,55 +52,45 @@ def app_draw():
 
 ############ RULETA ############
 def dibujar_ruleta():
-    # Dibujar la base de madera
+
     pygame.draw.circle(screen, BROWN, CENTRO, RADIO + 50)
 
-    # Dibujar el borde dorado
     pygame.draw.circle(screen, GOLD, CENTRO, RADIO + 10)
 
-    # Dibujar el círculo principal
     pygame.draw.circle(screen, BLACK, CENTRO, RADIO)
     pygame.draw.circle(screen, WHITE, CENTRO, RADIO, 5)
 
-    # Dibujar los segmentos de la ruleta
     radi = 150
     slice_angle = 2 * math.pi / len(nums)
 
     for i, num in enumerate(nums):
-        # Calcular ángulos del segmento
+    
         start_angle = angle + i * slice_angle
         end_angle = start_angle + slice_angle
 
-        # Coordenadas de los puntos
         point1 = CENTRO
         point2 = polar_to_cartesian(CENTRO, radi, start_angle)
         point3 = polar_to_cartesian(CENTRO, radi, end_angle)
 
-        # Dibujar triángulos de la ruleta y aplicar color
         color = get_color(num)
         pygame.draw.polygon(screen, color, [point1, point2, point3])
 
-        # Dibujar bordes
         pygame.draw.line(screen, BLACK, point1, point2, 3)
         pygame.draw.line(screen, BLACK, point1, point3, 3)
 
-        # Calcular posición del texto
         mid_angle = start_angle + slice_angle / 2
         text_x, text_y = polar_to_cartesian(CENTRO, radi * 0.7, mid_angle)
 
-        # Renderizar números de la ruleta
         font = pygame.font.SysFont(None, 20)
         text = f"{num}"
         text_surface = font.render(text, True, WHITE)
         text_rect = text_surface.get_rect(center=(text_x, text_y))
         screen.blit(text_surface, text_rect)
 
-    #Circulo central de la ruleta
     pygame.draw.circle(screen, GOLD, point1, 30)
-    #Anillo exterior
     pygame.draw.circle(screen, GOLD, point1, radi+2, 5)
 
-    #Dibujar indicador
+    #Indicador
     pygame.draw.polygon(screen, RED, [
         (CENTER_X + radi - 15, CENTER_Y),
         (CENTER_X + radi + 40, CENTER_Y - 15),
@@ -205,7 +195,6 @@ def dibujar_fichas():
         saldo = data["saldo"]
         fitxes = data["fitxes"]
 
-        # Dibujar la caja para el jugador
         box_x = x_offset_start - 50
         box_y = y_offset - 100
         box_width = 395
@@ -213,18 +202,15 @@ def dibujar_fichas():
         pygame.draw.rect(screen, (200, 200, 200), (box_x, box_y, box_width, box_height)) 
         pygame.draw.rect(screen, color, (box_x, box_y, box_width, box_height), 2)
 
-        # Dibujar el nombre del jugador y el saldo
         text = font3.render(f"{nom} - Crèdit: {saldo}", True, BLACK)
         screen.blit(text, (box_x + 10, box_y + 10))
 
-        # Dibujar la lista de fichas
         y_text = box_y + 50
         for den, cantidad in sorted(fitxes.items(), reverse=True):  
             ficha_texto = font3.render(f"Fichas de {den} x {cantidad}", True, BLACK)
             screen.blit(ficha_texto, (box_x + 10, y_text))
             y_text += 30
 
-        # Dibujar las fichas en filas organizadas
         y_fichas = y_offset
         x_fichas_start = x_offset_start
         for den, cantidad in sorted(fitxes.items()): 
@@ -238,15 +224,13 @@ def dibujar_fichas():
 
 # Función para dibujar una ficha de póker
 def dibuixar_fitxa(screen, x, y, color, denominacio, font2):
-    #Mover la posicion de las fichas
+    
     Aug_x = 300
     Aug_y = 120
 
-    # Círculo exterior
     pygame.draw.circle(screen, BLACK, (x + Aug_x, y + Aug_y), 25) 
     pygame.draw.circle(screen, color, (x + Aug_x, y + Aug_y), 23) 
 
-    # Decoración de borde
     for i in range(12):
         angle = i * 30
         rad = math.radians(angle)
@@ -254,10 +238,8 @@ def dibuixar_fitxa(screen, x, y, color, denominacio, font2):
         dy = int(19 * math.sin(rad))
         pygame.draw.circle(screen, WHITE, (x + dx + Aug_x, y + dy + Aug_y), 3)
 
-    # Círculo interior
     pygame.draw.circle(screen, WHITE, (x + Aug_x, y + Aug_y), 14)
 
-    # Número de denominación
     den_text = font2.render(str(denominacio), True, color)
     screen.blit(den_text, (x - den_text.get_width() // 2 + Aug_x, y - den_text.get_height() // 2 + Aug_y))
 

@@ -1,147 +1,148 @@
 import pygame
+from pygame.locals import *
+
+import pygame
 import math
 
-# Inicializar Pygame
-pygame.init()
-
-# Crear pantalla
-WIDTH = 800
-HEIGHT = 600
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-
-# Definir colores
-WHITE = (255, 255, 255)
+# Definimos colores
 BLACK = (0, 0, 0)
-RED = (255, 0, 0)
+ORANGE = (255, 128, 0)
+PURPLE = (138, 43, 226)
 BLUE = (0, 0, 255)
 
-# Inicializar fuente
-font2 = pygame.font.SysFont("Arial", 24)
-
-############ FICHAS ############
-def dibujar_fichas():
-    font2 = pygame.font.SysFont("Arial", 15)
-    y_offset = HEIGHT - 200  
-    x_offset_start = WIDTH - 400  
-
-    for nom, data in jugadores.items():
-        color = data["color"]
-        saldo = data["saldo"]
-        fitxes = data["fitxes"]
-
-        # Dibujar la caja para el jugador
-        box_x = x_offset_start - 50
-        box_y = y_offset - 100
-        box_width = 375
-        box_height = 225
-        pygame.draw.rect(screen, (200, 200, 200), (box_x, box_y, box_width, box_height)) 
-        pygame.draw.rect(screen, color, (box_x, box_y, box_width, box_height), 2)
-
-        # Dibujar el nombre del jugador y el saldo
-        text = font2.render(f"{nom} - Crèdit: {saldo}", True, BLACK)
-        screen.blit(text, (box_x + 10, box_y + 10))
-
-        # Dibujar la lista de fichas
-        y_text = box_y + 40
-        for den, cantidad in sorted(fitxes.items(), reverse=True):  
-            ficha_texto = font2.render(f"Fichas de {den}: {cantidad}", True, BLACK)
-            screen.blit(ficha_texto, (box_x + 10, y_text))
-            y_text += 20
-
-        # Dibujar las fichas en filas organizadas
-        y_fichas = y_offset
-        x_fichas_start = x_offset_start
-        for den, cantidad in sorted(fitxes.items()): 
-            x_fichas = x_fichas_start
-            for _ in range(cantidad):
-                dibuixar_fitxa(screen, x_fichas, y_fichas, color, den, font2)
-                x_fichas -= 0  
-            y_fichas -= 40 
-
-        x_offset_start -= 400  
-
-# Función para dibujar una ficha de póker
-def dibuixar_fitxa(screen, x, y, color, denominacio, font2):
-    
-    radio_exterior = 20  
-    radio_interior = 18  
-    radio_borde_decoracion = 14
-    radio_centro = 10  
-    radio_decoracion = 2 
-
-    #Mover la posicion de las fichas
-    Aug_x = 280
-    Aug_y = 82
-
-    # Círculo exterior
-    pygame.draw.circle(screen, BLACK, (x + Aug_x, y + Aug_y), radio_exterior)
-    pygame.draw.circle(screen, color, (x+ Aug_x, y + Aug_y), radio_interior)
-
-    # Decoración de borde
-    for i in range(12):
-        angle = i * 30
-        rad = math.radians(angle)
-        dx = int(radio_borde_decoracion * math.cos(rad))
-        dy = int(radio_borde_decoracion * math.sin(rad))
-        pygame.draw.circle(screen, WHITE, (x + dx + Aug_x, y + dy + Aug_y), radio_decoracion)
-
-    # Círculo interior
-    pygame.draw.circle(screen, WHITE, (x + Aug_x, y + Aug_y), radio_centro)
-
-    # Número de denominación
-    den_text = font2.render(str(denominacio), True, color)
-    screen.blit(den_text, (x - den_text.get_width() // 2 + Aug_x, y - den_text.get_height() // 2 + Aug_y))
-
-# Datos de ejemplo para jugadores
+# Variables de jugadores
 jugadores = {
     "Taronja": {
-        "color": (255,128,0), #Naranja # Color de las fichas
+        "color": ORANGE, 
         "saldo": 100,
         "fitxes": {
-            5: 3,  # 3 fichas de 5
-            10: 2, # 2 fichas de 10
-            20: 1, # 1 ficha de 20
+            100: 1,  
+            50: 1, 
+            20: 1, 
+            10: 2,
+            5: 2 
         }
     },
     "Lila": {
-        "color": (138, 43, 226),  # Color lila
-        "saldo": 120,
+        "color": PURPLE, 
+        "saldo": 100,
         "fitxes": {
-            5: 2,  # 2 fichas de 5
-            50: 1, # 1 ficha de 50
-            100: 1, # 1 ficha de 100
+            100: 1,  
+            50: 1, 
+            20: 1, 
+            10: 2,
+            5: 2 
         }
     },
     "Blau": {
         "color": BLUE,
-        "saldo": 150,
+        "saldo": 100,
         "fitxes": {
-            10: 3,  # 3 fichas de 10
-            50: 1,  # 1 ficha de 50
+            100: 1,  
+            50: 1, 
+            20: 1, 
+            10: 2,
+            5: 2 
         }
     }
 }
 
-# Ciclo principal de Pygame
+# Función para dibujar la ficha (póker)
+def dibujar_fitxa(screen, x, y, color, denominacion, font2):
+    Aug_x = 300
+    Aug_y = 120
+
+    pygame.draw.circle(screen, BLACK, (x + Aug_x, y + Aug_y), 25) 
+    pygame.draw.circle(screen, color, (x + Aug_x, y + Aug_y), 23) 
+
+    for i in range(12):
+        angle = i * 30
+        rad = math.radians(angle)
+        dx = int(19 * math.cos(rad))
+        dy = int(19 * math.sin(rad))
+        pygame.draw.circle(screen, (255, 255, 255), (x + dx + Aug_x, y + dy + Aug_y), 3)
+
+    pygame.draw.circle(screen, (255, 255, 255), (x + Aug_x, y + Aug_y), 14)
+
+    den_text = font2.render(str(denominacion), True, color)
+    screen.blit(den_text, (x - den_text.get_width() // 2 + Aug_x, y - den_text.get_height() // 2 + Aug_y))
+
+# Función para manejar el movimiento de las fichas
+def mover_ficha(screen, jugadores, denominacion, jugador_color, mouse_pos):
+    # Encuentra la ficha que corresponde al jugador y denominación
+    for jugador, data in jugadores.items():
+        if data["color"] == jugador_color:
+            if denominacion in data["fitxes"] and data["fitxes"][denominacion] > 0:
+                # Mover la ficha a la posición del ratón
+                x, y = mouse_pos
+                dibujar_fitxa(screen, x, y, jugador_color, denominacion, pygame.font.SysFont("Arial", 16))
+                return True
+    return False
+
+# Función para verificar si se ha hecho clic en una ficha
+def verificar_click_ficha(mouse_pos, jugadores, denominacion, jugador_color):
+    # Verifica si el clic ocurrió dentro de las coordenadas de la ficha
+    x, y = mouse_pos
+    for jugador, data in jugadores.items():
+        if data["color"] == jugador_color:
+            # Determinamos la posición de la ficha para el jugador
+            # Calculamos la posición para dibujar las fichas
+            x_offset_start = 300
+            y_offset = 500  # Posición Y predeterminada de las fichas
+
+            for den, cantidad in sorted(data["fitxes"].items()):
+                if den == denominacion and cantidad > 0:
+                    # Verificar si el clic está dentro de la región de la ficha
+                    if abs(x - x_offset_start) < 50 and abs(y - y_offset) < 50:
+                        return True
+                y_offset -= 50
+    return False
+
+
+pygame.init()
+screen = pygame.display.set_mode((800, 600))
+
+# Variables del jugador y sus fichas
+jugadores = {
+    "Taronja": {
+        "color": ORANGE, 
+        "saldo": 100,
+        "fitxes": {100: 1, 50: 1, 20: 1, 10: 2, 5: 2}
+    }
+}
+
+# Definir las fuentes
+font = pygame.font.SysFont("Arial", 16)
+
+# Bucle principal del juego
 running = True
+ficha_moving = False
+denominacion = 10  # Por ejemplo, ficha de valor 10
+jugador_color = ORANGE  # Jugador "Taronja"
 while running:
-    # Comprobar eventos
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+        if event.type == QUIT:
             running = False
 
-    # Limpiar pantalla
-    screen.fill(WHITE)
+        if event.type == MOUSEBUTTONDOWN:
+            # Verificar si clickeamos en una ficha
+            if verificar_click_ficha(pygame.mouse.get_pos(), jugadores, denominacion, jugador_color):
+                ficha_moving = True
 
-    # Dibujar fichas de los jugadores
-    dibuixar_fitxes()
+        if event.type == MOUSEMOTION:
+            if ficha_moving:
+                # Mover la ficha con el ratón
+                screen.fill((34, 139, 34))  # Fondo de la mesa
+                mover_ficha(screen, jugadores, denominacion, jugador_color, pygame.mouse.get_pos())
+                pygame.display.update()
 
-    # Actualizar pantalla
+        if event.type == MOUSEBUTTONUP:
+            if ficha_moving:
+                ficha_moving = False
+
     pygame.display.update()
 
-# Salir de Pygame
 pygame.quit()
-
 
 ########## CODIGO DE RULETA FUNCIONAL(CON EVENTOS Y CALCULOS) ##########
 """

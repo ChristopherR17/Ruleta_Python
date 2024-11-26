@@ -9,9 +9,11 @@ start_angle = 0
 target_angle = 0
 animation_start_time = 0
 
-#result_number = 0
+result_number = 0
 
 def calculos(nums, angle, spin_velocity, animating):
+    global result_number
+
     if not animating:
         return angle, spin_velocity, animating
     

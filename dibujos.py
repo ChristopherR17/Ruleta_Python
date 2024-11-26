@@ -15,7 +15,7 @@ BLACK = (0, 0, 0)
 GRAY = (200, 200, 200)
 BLUE = (70, 130, 180)
 BROWN = (139, 69, 19)
-GREEN = (0, 128, 0)(34, 139, 34)
+GREEN = (0, 128, 0)
 RED = (200, 0, 0)
 GOLD = (212, 175, 55)
 V_TABLERO = (34, 139, 34)
@@ -45,8 +45,9 @@ jugadores = {}
 #Lista para almacenar la posicion de cada ficha que se dibuja
 fichas = []
 
-#Resultat ruleta
-#resultado = 0
+#Variables para mostrar el resultado
+resultado = 0
+animating = False
 
 def app_draw():
     screen.fill(V_TABLERO)
@@ -132,11 +133,18 @@ def dibujar_ruleta():
     text_surface = font.render("GIRAR", True, WHITE)
     text_rect = text_surface.get_rect(center=(button_x + button_width // 2, button_y + button_height // 2))
     screen.blit(text_surface, text_rect)
-"""
-    font = pygame.font.SysFont(None, 20)
-    text = font.render(resultado, True, (255, 255, 255))
-    screen.blit(CENTER_X, CENTER_Y)
-"""
+
+    #RESULTADO EN EL CENTRO DE LA RULETA
+    if resultado != 0 and animating == False:
+        pygame.draw.circle(screen, WHITE, CENTRO, 25)
+
+        font3 = pygame.font.SysFont(None, 35)
+        text3 = font3.render(str(resultado), True, BLACK)
+        text_rect = text3.get_rect(center=(CENTER_X, CENTER_Y))
+        screen.blit(text3, text_rect)
+    else:
+        pygame.draw.circle(screen, GOLD, point1, 30)
+
 def polar_to_cartesian(center, radius, angle_rad):
     x = center[0] + radius * math.cos(angle_rad)
     y = center[1] + radius * math.sin(angle_rad)

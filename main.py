@@ -16,7 +16,6 @@ def main():
     angle = 0
     spin_velocity = 0
     animating = False
-    #resultado = 0
     running = True
 
     fichas = dibujos.fichas
@@ -29,7 +28,8 @@ def main():
         e_fichas.fichas = fichas
         e_fichas.manejar_arrastre_fichas()
 
-        #dibujos.resultado = resultado
+        dibujos.animating = animating
+        dibujos.resultado = e_ruleta.result_number
         dibujos.angle = angle
         dibujos.app_draw() 
 

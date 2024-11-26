@@ -15,9 +15,10 @@ BLACK = (0, 0, 0)
 GRAY = (200, 200, 200)
 BLUE = (70, 130, 180)
 BROWN = (139, 69, 19)
-GREEN = (0, 128, 0)
+GREEN = (0, 128, 0)(34, 139, 34)
 RED = (200, 0, 0)
 GOLD = (212, 175, 55)
+V_TABLERO = (34, 139, 34)
 
 #Variables globales
 nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 11, 14, 13, 16, 15, 18, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 30, 29, 32, 31, 34, 33, 36, 35]
@@ -48,7 +49,7 @@ fichas = []
 #resultado = 0
 
 def app_draw():
-    screen.fill((34, 139, 34))
+    screen.fill(V_TABLERO)
 
     utils.draw_grid(pygame, screen, 50)
 

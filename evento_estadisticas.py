@@ -1,0 +1,1 @@
+#Aqui estoy pensando en poner los eventos para que cuando se pulse un boton que ponga 'stats' se muestre el archivo stats.py.

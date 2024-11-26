@@ -1,4 +1,5 @@
 import pygame
+from pygame.locals import *
 import math
 
 # Inicializar Pygame
@@ -134,7 +135,7 @@ while running:
     screen.fill(WHITE)
 
     # Dibujar fichas de los jugadores
-    dibuixar_fitxes()
+    #dibuixar_fitxes()
 
     # Actualizar pantalla
     pygame.display.update()

@@ -18,31 +18,11 @@ BLUE = (0, 0, 255)
 # Inicializar fuente
 font2 = pygame.font.SysFont("Arial", 24)
 
-# Función para dibujar una ficha de póker
-def dibuixar_fitxa(screen, x, y, color, denominacio):
-    # Círculo exterior
-    pygame.draw.circle(screen, BLACK, (x, y), 30)  # Borde negro
-    pygame.draw.circle(screen, color, (x, y), 28)  # Color principal
-
-    # Decoración de borde
-    for i in range(12):
-        angle = i * 30
-        rad = math.radians(angle)
-        dx = int(24 * math.cos(rad))
-        dy = int(24 * math.sin(rad))
-        pygame.draw.circle(screen, WHITE, (x + dx, y + dy), 4)
-
-    # Círculo interior
-    pygame.draw.circle(screen, WHITE, (x, y), 18)
-
-    # Número de denominación
-    den_text = font2.render(str(denominacio), True, color)
-    screen.blit(den_text, (x - den_text.get_width() // 2, y - den_text.get_height() // 2))
-
+############ FICHAS ############
 def dibujar_fichas():
     font2 = pygame.font.SysFont("Arial", 15)
-    y_offset = HEIGHT - 200  # Posición vertical inicial para las cajas
-    x_offset_start = WIDTH - 400  # Posición horizontal inicial para las cajas
+    y_offset = HEIGHT - 200  
+    x_offset_start = WIDTH - 400  
 
     for nom, data in jugadores.items():
         color = data["color"]
@@ -52,10 +32,10 @@ def dibujar_fichas():
         # Dibujar la caja para el jugador
         box_x = x_offset_start - 50
         box_y = y_offset - 100
-        box_width = 300
-        box_height = 150
-        pygame.draw.rect(screen, (200, 200, 200), (box_x, box_y, box_width, box_height))  # Fondo
-        pygame.draw.rect(screen, BLACK, (box_x, box_y, box_width, box_height), 2)  # Borde
+        box_width = 375
+        box_height = 225
+        pygame.draw.rect(screen, (200, 200, 200), (box_x, box_y, box_width, box_height)) 
+        pygame.draw.rect(screen, color, (box_x, box_y, box_width, box_height), 2)
 
         # Dibujar el nombre del jugador y el saldo
         text = font2.render(f"{nom} - Crèdit: {saldo}", True, BLACK)
@@ -63,29 +43,54 @@ def dibujar_fichas():
 
         # Dibujar la lista de fichas
         y_text = box_y + 40
-        for den, cantidad in sorted(fitxes.items(), reverse=True):  # Ordenar por denominación descendente
+        for den, cantidad in sorted(fitxes.items(), reverse=True):  
             ficha_texto = font2.render(f"Fichas de {den}: {cantidad}", True, BLACK)
             screen.blit(ficha_texto, (box_x + 10, y_text))
             y_text += 20
 
-        # Dibujar las fichas en filas dentro de la caja
-        y_fichas = box_y + 70  # Iniciar las fichas debajo del texto
-        x_fichas_start = box_x + 20  # Espacio inicial dentro de la caja
-        espacio_horizontal = 40  # Espacio entre fichas horizontalmente
-        espacio_vertical = 30  # Espacio entre fichas verticalmente
-
-        for den, cantidad in sorted(fitxes.items(), reverse=True):
+        # Dibujar las fichas en filas organizadas
+        y_fichas = y_offset
+        x_fichas_start = x_offset_start
+        for den, cantidad in sorted(fitxes.items()): 
             x_fichas = x_fichas_start
-            for i in range(cantidad):
-                # Cambiar de fila si no hay espacio horizontal
-                if x_fichas + 20 > box_x + box_width - 20:
-                    x_fichas = x_fichas_start
-                    y_fichas += espacio_vertical
-
+            for _ in range(cantidad):
                 dibuixar_fitxa(screen, x_fichas, y_fichas, color, den, font2)
-                x_fichas += espacio_horizontal
+                x_fichas -= 0  
+            y_fichas -= 40 
 
-        x_offset_start -= 400  # Moverse a la posición de la siguiente caja
+        x_offset_start -= 400  
+
+# Función para dibujar una ficha de póker
+def dibuixar_fitxa(screen, x, y, color, denominacio, font2):
+    
+    radio_exterior = 20  
+    radio_interior = 18  
+    radio_borde_decoracion = 14
+    radio_centro = 10  
+    radio_decoracion = 2 
+
+    #Mover la posicion de las fichas
+    Aug_x = 280
+    Aug_y = 82
+
+    # Círculo exterior
+    pygame.draw.circle(screen, BLACK, (x + Aug_x, y + Aug_y), radio_exterior)
+    pygame.draw.circle(screen, color, (x+ Aug_x, y + Aug_y), radio_interior)
+
+    # Decoración de borde
+    for i in range(12):
+        angle = i * 30
+        rad = math.radians(angle)
+        dx = int(radio_borde_decoracion * math.cos(rad))
+        dy = int(radio_borde_decoracion * math.sin(rad))
+        pygame.draw.circle(screen, WHITE, (x + dx + Aug_x, y + dy + Aug_y), radio_decoracion)
+
+    # Círculo interior
+    pygame.draw.circle(screen, WHITE, (x + Aug_x, y + Aug_y), radio_centro)
+
+    # Número de denominación
+    den_text = font2.render(str(denominacio), True, color)
+    screen.blit(den_text, (x - den_text.get_width() // 2 + Aug_x, y - den_text.get_height() // 2 + Aug_y))
 
 # Datos de ejemplo para jugadores
 jugadores = {

@@ -1,7 +1,9 @@
 import pygame
 import math
 import random
-import time
+
+mouse_x, mouse_y = pygame.mouse.get_pos()
+mouse_pos = (mouse_x, mouse_y)
 
 #Global
 animating = False
@@ -34,24 +36,18 @@ def r_ruleta(nums, angle, spin_velocity, animating):
     
     return angle, spin_velocity, animating
 
-#FICHAS
-def r_fichas():
-    pass
-
 #Eventos
 #RULETA
 def e_ruleta(WIDTH, HEIGHT, animating, spin_velocity):
+    button_x = WIDTH // 7 + 175 + 70
+    button_y = HEIGHT // 4 - 25
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             return False, animating, spin_velocity
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_x, mouse_y = pygame.mouse.get_pos()
-            if (WIDTH // 7 + 175 + 70 <= mouse_x <=  WIDTH // 7 + 175 + 70 + 150) and (HEIGHT // 4 - 25 <= mouse_y <= HEIGHT // 4 - 25 + 50):
+            if (button_x <= mouse_x <=  button_x + 150) and (button_y <= mouse_y <= button_y + 50):
                 if not animating:
                     animating = True
                     spin_velocity = random.uniform(0.15, 0.2)
     return True, animating, spin_velocity
-
-#FICHAS
-def e_fichas():
-    pass

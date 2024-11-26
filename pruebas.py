@@ -1,29 +1,21 @@
 import pygame
-from pygame.locals import *
 import math
 
-# Inicializar Pygame
-pygame.init()
+# Variable para rastrear el estado de arrastre
+dragging = False
+dragged_chip = None
+offset_x, offset_y = 0, 0
 
-# Crear pantalla
-WIDTH = 800
-HEIGHT = 600
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-
-# Definir colores
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-RED = (255, 0, 0)
-BLUE = (0, 0, 255)
-
-# Inicializar fuente
-font2 = pygame.font.SysFont("Arial", 24)
-
-############ FICHAS ############
 def dibujar_fichas():
-    font2 = pygame.font.SysFont("Arial", 15)
+    global dragging, dragged_chip, offset_x, offset_y
+    
+    font2 = pygame.font.SysFont("Arial", 16)
+    font3 = pygame.font.SysFont("Arial", 25)
     y_offset = HEIGHT - 200  
     x_offset_start = WIDTH - 400  
+
+    # Lista de las fichas (coordenadas iniciales para cada ficha)
+    fichas = []
 
     for nom, data in jugadores.items():
         color = data["color"]
@@ -33,117 +25,187 @@ def dibujar_fichas():
         # Dibujar la caja para el jugador
         box_x = x_offset_start - 50
         box_y = y_offset - 100
-        box_width = 375
-        box_height = 225
+        box_width = 395
+        box_height = 245
         pygame.draw.rect(screen, (200, 200, 200), (box_x, box_y, box_width, box_height)) 
         pygame.draw.rect(screen, color, (box_x, box_y, box_width, box_height), 2)
 
         # Dibujar el nombre del jugador y el saldo
-        text = font2.render(f"{nom} - Crèdit: {saldo}", True, BLACK)
+        text = font3.render(f"{nom} - Crèdit: {saldo}", True, BLACK)
         screen.blit(text, (box_x + 10, box_y + 10))
 
         # Dibujar la lista de fichas
-        y_text = box_y + 40
+        y_text = box_y + 50
         for den, cantidad in sorted(fitxes.items(), reverse=True):  
-            ficha_texto = font2.render(f"Fichas de {den}: {cantidad}", True, BLACK)
+            ficha_texto = font3.render(f"Fichas de {den} x {cantidad}", True, BLACK)
             screen.blit(ficha_texto, (box_x + 10, y_text))
-            y_text += 20
+            y_text += 30
 
         # Dibujar las fichas en filas organizadas
         y_fichas = y_offset
         x_fichas_start = x_offset_start
         for den, cantidad in sorted(fitxes.items()): 
             x_fichas = x_fichas_start
-            for _ in range(cantidad):
-                dibuixar_fitxa(screen, x_fichas, y_fichas, color, den, font2)
+            for i in range(cantidad):
+                ficha = dibuixar_fitxa(screen, x_fichas, y_fichas, color, den, font2)
+                fichas.append(ficha)  # Guardar información sobre la ficha
                 x_fichas -= 0  
-            y_fichas -= 40 
+            y_fichas -= 50 
 
         x_offset_start -= 400  
 
-# Función para dibujar una ficha de póker
-def dibuixar_fitxa(screen, x, y, color, denominacio, font2):
-    
-    radio_exterior = 20  
-    radio_interior = 18  
-    radio_borde_decoracion = 14
-    radio_centro = 10  
-    radio_decoracion = 2 
+    return fichas  # Devolvemos la lista de fichas
 
-    #Mover la posicion de las fichas
-    Aug_x = 280
-    Aug_y = 82
+# Función para dibujar una ficha de póker y devolver sus coordenadas
+def dibuixar_fitxa(screen, x, y, color, denominacio, font2):
+    Aug_x = 300
+    Aug_y = 120
 
     # Círculo exterior
-    pygame.draw.circle(screen, BLACK, (x + Aug_x, y + Aug_y), radio_exterior)
-    pygame.draw.circle(screen, color, (x+ Aug_x, y + Aug_y), radio_interior)
+    pygame.draw.circle(screen, BLACK, (x + Aug_x, y + Aug_y), 25) 
+    pygame.draw.circle(screen, color, (x + Aug_x, y + Aug_y), 23) 
 
     # Decoración de borde
     for i in range(12):
         angle = i * 30
         rad = math.radians(angle)
-        dx = int(radio_borde_decoracion * math.cos(rad))
-        dy = int(radio_borde_decoracion * math.sin(rad))
-        pygame.draw.circle(screen, WHITE, (x + dx + Aug_x, y + dy + Aug_y), radio_decoracion)
+        dx = int(19 * math.cos(rad))
+        dy = int(19 * math.sin(rad))
+        pygame.draw.circle(screen, WHITE, (x + dx + Aug_x, y + dy + Aug_y), 3)
 
     # Círculo interior
-    pygame.draw.circle(screen, WHITE, (x + Aug_x, y + Aug_y), radio_centro)
+    pygame.draw.circle(screen, WHITE, (x + Aug_x, y + Aug_y), 14)
 
     # Número de denominación
     den_text = font2.render(str(denominacio), True, color)
     screen.blit(den_text, (x - den_text.get_width() // 2 + Aug_x, y - den_text.get_height() // 2 + Aug_y))
 
-# Datos de ejemplo para jugadores
-jugadores = {
-    "Taronja": {
-        "color": (255,128,0), #Naranja # Color de las fichas
-        "saldo": 100,
-        "fitxes": {
-            5: 3,  # 3 fichas de 5
-            10: 2, # 2 fichas de 10
-            20: 1, # 1 ficha de 20
-        }
-    },
-    "Lila": {
-        "color": (138, 43, 226),  # Color lila
-        "saldo": 120,
-        "fitxes": {
-            5: 2,  # 2 fichas de 5
-            50: 1, # 1 ficha de 50
-            100: 1, # 1 ficha de 100
-        }
-    },
-    "Blau": {
-        "color": BLUE,
-        "saldo": 150,
-        "fitxes": {
-            10: 3,  # 3 fichas de 10
-            50: 1,  # 1 ficha de 50
-        }
-    }
-}
+    # Devolvemos las coordenadas de la ficha para su posterior uso en el arrastre
+    return {'x': x, 'y': y, 'denominacio': denominacio, 'color': color, 'radius': 25}
 
-# Ciclo principal de Pygame
+# Función para manejar los eventos de arrastre de fichas
+def manejar_arrastre_fichas(event, fichas):
+    global dragging, dragged_chip, offset_x, offset_y
+    
+    if event.type == pygame.QUIT:
+        return False
+
+    elif event.type == pygame.MOUSEBUTTONDOWN:
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+
+        # Verificar si el ratón está sobre alguna ficha
+        for ficha in fichas:
+            distance = math.sqrt((mouse_x - (ficha['x'] + 300)) ** 2 + (mouse_y - (ficha['y'] + 120)) ** 2)
+            if distance <= ficha['radius']:  # Si está dentro del radio de la ficha
+                dragging = True
+                dragged_chip = ficha
+                offset_x = ficha['x'] - mouse_x
+                offset_y = ficha['y'] - mouse_y
+                break  # Solo arrastramos una ficha a la vez
+
+    elif event.type == pygame.MOUSEMOTION:
+        # Si estamos arrastrando una ficha, actualizar su posición
+        if dragging and dragged_chip:
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            dragged_chip['x'] = mouse_x + offset_x
+            dragged_chip['y'] = mouse_y + offset_y
+
+    elif event.type == pygame.MOUSEBUTTONUP:
+        # Dejar de arrastrar cuando se suelta el botón del ratón
+        dragging = False
+        dragged_chip = None
+
+    return True
+
+dibujar_fichas()
+manejar_arrastre_fichas(event, fichas)
+
+#Codigo de prueba para que la ficha se arrastre(LO HACE)
+"""import pygame
+import math
+
+# Inicialización de Pygame
+pygame.init()
+
+# Colores
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+RED = (255, 0, 0)
+
+# Tamaño de la ventana
+screen_width = 800
+screen_height = 600
+screen = pygame.display.set_mode((screen_width, screen_height))
+
+# Fuente para la denominación
+font2 = pygame.font.Font(None, 36)
+
+# Variables de posición inicial de la ficha
+x, y = 100, 100  # Coordenadas iniciales
+denominacion = 10  # Ejemplo de denominación de la ficha
+
+# Variables de estado del arrastre
+dragging = False
+offset_x = 0
+offset_y = 0
+
+def dibuixar_fitxa(screen, x, y, color, denominacio, font2):
+    Aug_x = 300
+    Aug_y = 120
+
+    # Círculo exterior
+    pygame.draw.circle(screen, BLACK, (x + Aug_x, y + Aug_y), 25) 
+    pygame.draw.circle(screen, color, (x + Aug_x, y + Aug_y), 23) 
+
+    # Decoración de borde
+    for i in range(12):
+        angle = i * 30
+        rad = math.radians(angle)
+        dx = int(19 * math.cos(rad))
+        dy = int(19 * math.sin(rad))
+        pygame.draw.circle(screen, WHITE, (x + dx + Aug_x, y + dy + Aug_y), 3)
+
+    # Círculo interior
+    pygame.draw.circle(screen, WHITE, (x + Aug_x, y + Aug_y), 14)
+
+    # Número de denominación
+    den_text = font2.render(str(denominacio), True, color)
+    screen.blit(den_text, (x - den_text.get_width() // 2 + Aug_x, y - den_text.get_height() // 2 + Aug_y))
+
+# Bucle principal
 running = True
 while running:
-    # Comprobar eventos
+    screen.fill((0, 0, 0))  # Fondo de pantalla negro
+
+    # Eventos
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            # Verificar si el ratón está sobre la ficha
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            distance = math.sqrt((mouse_x - (x + 300)) ** 2 + (mouse_y - (y + 120)) ** 2)
+            if distance <= 25:  # Si está dentro del radio de la ficha
+                dragging = True
+                offset_x = x - mouse_x
+                offset_y = y - mouse_y
+        elif event.type == pygame.MOUSEMOTION:
+            # Si estamos arrastrando la ficha, actualizar su posición
+            if dragging:
+                x = event.pos[0] + offset_x
+                y = event.pos[1] + offset_y
+        elif event.type == pygame.MOUSEBUTTONUP:
+            # Dejar de arrastrar cuando se suelta el botón del ratón
+            dragging = False
 
-    # Limpiar pantalla
-    screen.fill(WHITE)
+    # Dibujar la ficha
+    dibuixar_fitxa(screen, x, y, RED, denominacion, font2)
 
-    # Dibujar fichas de los jugadores
-    #dibuixar_fitxes()
-
-    # Actualizar pantalla
-    pygame.display.update()
+    pygame.display.flip()  # Actualizar pantalla
 
 # Salir de Pygame
 pygame.quit()
-
-
+"""
 ########## CODIGO DE RULETA FUNCIONAL(CON EVENTOS Y CALCULOS) ##########
 """
 import math

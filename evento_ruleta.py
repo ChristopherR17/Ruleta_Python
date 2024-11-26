@@ -11,7 +11,6 @@ deceleration = 0.001
 start_angle = 0
 target_angle = 0
 animation_start_time = 0
-spin_velocity = 0  
 
 def calculos(nums, angle, spin_velocity, animating):
     if not animating:

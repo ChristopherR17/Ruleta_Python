@@ -39,6 +39,9 @@ MARGIN = 10
 black_numbers = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35]
 red_numbers = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
 
+#Lista para almacenar la posicion de cada ficha que se dibuja
+fichas = []
+
 def app_draw():
     screen.fill((34, 139, 34))
 
@@ -205,7 +208,6 @@ def dibujar_fichas():
         saldo = data["saldo"]
         fitxes = data["fitxes"]
 
-        # Dibujar la caja para el jugador
         box_x = x_offset_start - 50
         box_y = y_offset - 100
         box_width = 395
@@ -213,32 +215,29 @@ def dibujar_fichas():
         pygame.draw.rect(screen, (200, 200, 200), (box_x, box_y, box_width, box_height)) 
         pygame.draw.rect(screen, color, (box_x, box_y, box_width, box_height), 2)
 
-        # Dibujar el nombre del jugador y el saldo
         text = font3.render(f"{nom} - Crèdit: {saldo}", True, BLACK)
         screen.blit(text, (box_x + 10, box_y + 10))
 
-        # Dibujar la lista de fichas
         y_text = box_y + 50
         for den, cantidad in sorted(fitxes.items(), reverse=True):  
             ficha_texto = font3.render(f"Fichas de {den} x {cantidad}", True, BLACK)
             screen.blit(ficha_texto, (box_x + 10, y_text))
             y_text += 30
 
-        # Dibujar las fichas en filas organizadas
         y_fichas = y_offset
         x_fichas_start = x_offset_start
         for den, cantidad in sorted(fitxes.items()): 
             x_fichas = x_fichas_start
             for _ in range(cantidad):
-                dibuixar_fitxa(screen, x_fichas, y_fichas, color, den, font2)
+                ficha = dibuixar_fitxa(screen, x_fichas, y_fichas, color, den, font2)
+                fichas.append(ficha)
                 x_fichas -= 0  
             y_fichas -= 50 
 
         x_offset_start -= 400  
 
-# Función para dibujar una ficha de póker
 def dibuixar_fitxa(screen, x, y, color, denominacio, font2):
-    #Mover la posicion de las fichas
+    
     Aug_x = 300
     Aug_y = 120
 
@@ -260,6 +259,10 @@ def dibuixar_fitxa(screen, x, y, color, denominacio, font2):
     # Número de denominación
     den_text = font2.render(str(denominacio), True, color)
     screen.blit(den_text, (x - den_text.get_width() // 2 + Aug_x, y - den_text.get_height() // 2 + Aug_y))
+
+############ ESTADISTICAS ############
+def estadisticas():
+    pass
 
 
 

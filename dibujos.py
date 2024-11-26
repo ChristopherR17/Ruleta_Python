@@ -23,7 +23,6 @@ GOLD = (212, 175, 55)
 nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 11, 14, 13, 16, 15, 18, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 30, 29, 32, 31, 34, 33, 36, 35]
 angle = 0
 counters = [0] * len(nums)
-jugadores = {}
 
 #Posicion de la ruleta
 CENTER_X, CENTER_Y = WIDTH // 7, HEIGHT // 4  
@@ -39,8 +38,14 @@ MARGIN = 10
 black_numbers = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35]
 red_numbers = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
 
+#Diccionario que recibe la informacion del archivo jugadores
+jugadores = {}
+
 #Lista para almacenar la posicion de cada ficha que se dibuja
 fichas = []
+
+#Resultat ruleta
+#resultado = 0
 
 def app_draw():
     screen.fill((34, 139, 34))
@@ -126,7 +131,11 @@ def dibujar_ruleta():
     text_surface = font.render("GIRAR", True, WHITE)
     text_rect = text_surface.get_rect(center=(button_x + button_width // 2, button_y + button_height // 2))
     screen.blit(text_surface, text_rect)
-
+"""
+    font = pygame.font.SysFont(None, 20)
+    text = font.render(resultado, True, (255, 255, 255))
+    screen.blit(CENTER_X, CENTER_Y)
+"""
 def polar_to_cartesian(center, radius, angle_rad):
     x = center[0] + radius * math.cos(angle_rad)
     y = center[1] + radius * math.sin(angle_rad)
@@ -198,6 +207,8 @@ def get_color(number):
 
 ############ FICHAS ############
 def dibujar_fichas():
+    global fichas
+
     font2 = pygame.font.SysFont("Arial", 16)
     font3 = pygame.font.SysFont("Arial", 25)
     y_offset = HEIGHT - 200  
@@ -229,14 +240,14 @@ def dibujar_fichas():
         for den, cantidad in sorted(fitxes.items()): 
             x_fichas = x_fichas_start
             for _ in range(cantidad):
-                ficha = dibuixar_fitxa(screen, x_fichas, y_fichas, color, den, font2)
+                ficha = dibuixar_fitxa(x_fichas, y_fichas, color, den, font2)
                 fichas.append(ficha)
                 x_fichas -= 0  
             y_fichas -= 50 
 
         x_offset_start -= 400  
 
-def dibuixar_fitxa(screen, x, y, color, denominacio, font2):
+def dibuixar_fitxa(x, y, color, denominacio, font2):
     
     Aug_x = 300
     Aug_y = 120

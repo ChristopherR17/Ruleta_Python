@@ -16,15 +16,20 @@ def main():
     angle = 0
     spin_velocity = 0
     animating = False
+    #resultado = 0
     running = True
 
+    fichas = dibujos.fichas
     dibujos.jugadores = players.jugadores 
 
     while running:
         running, animating, spin_velocity = e_ruleta.eventos(WIDTH, HEIGHT, animating, spin_velocity)
-        
         angle, spin_velocity, animating = e_ruleta.calculos(dibujos.nums, angle, spin_velocity, animating)
 
+        e_fichas.fichas = fichas
+        e_fichas.manejar_arrastre_fichas()
+
+        #dibujos.resultado = resultado
         dibujos.angle = angle
         dibujos.app_draw() 
 

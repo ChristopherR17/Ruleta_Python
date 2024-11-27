@@ -1,38 +1,36 @@
 import pygame
 import sys
+import math
 
 
-#Despues de varios intentos sigo sin saber que poner aqui para que vaya 
+#Despues de varios intentos sigo sin saber que poner aqui para que vaya
 
 
-# def manejar_arrastre_fichas():
-#     global dragging, dragged_chip, offset_x, offset_y, fichas
+def manejar_arrastre_fichas():
+    global dragging, dragged_chip, offset_x, offset_y, fichas
     
-#     for event in pygame.event.get():
-#         if event.type == pygame.QUIT:
-#             return False
-#         elif event.type == pygame.MOUSEBUTTONDOWN:
-#             mouse_x, mouse_y = pygame.mouse.get_pos()
-#             # Verificar si el ratón está sobre alguna ficha
-#             for ficha in fichas:
-#                 distance = math.sqrt((mouse_x - (ficha['x'] + 300)) ** 2 + (mouse_y - (ficha['y'] + 120)) ** 2)
-#                 if distance <= ficha['radius']:  # Si está dentro del radio de la ficha
-#                     dragging = True
-#                     dragged_chip = ficha
-#                     offset_x = ficha['x'] - mouse_x
-#                     offset_y = ficha['y'] - mouse_y
-#                     break  # Solo arrastramos una ficha a la vez
-#         elif event.type == pygame.MOUSEMOTION:
-#             # Si estamos arrastrando una ficha, actualizar su posición
-#             if dragging and dragged_chip:
-#                 mouse_x, mouse_y = pygame.mouse.get_pos()
-#                 dragged_chip['x'] = mouse_x + offset_x
-#                 dragged_chip['y'] = mouse_y + offset_y
-#         elif event.type == pygame.MOUSEBUTTONUP:
-#             # Dejar de arrastrar cuando se suelta el botón del ratón
-#             dragging = False
-#             dragged_chip = None
-#     return True
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            return False
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            for ficha in fichas:
+                distance = math.sqrt((mouse_x - (ficha['x'] + 300)) ** 2 + (mouse_y - (ficha['y'] + 120)) ** 2)
+                if distance <= ficha['radius']:  
+                    dragging = True
+                    dragged_chip = ficha
+                    offset_x = ficha['x'] - mouse_x
+                    offset_y = ficha['y'] - mouse_y
+                    break  
+        elif event.type == pygame.MOUSEMOTION:
+            if dragging and dragged_chip:
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                dragged_chip['x'] = mouse_x + offset_x
+                dragged_chip['y'] = mouse_y + offset_y
+        elif event.type == pygame.MOUSEBUTTONUP:
+            dragging = False
+            dragged_chip = None
+    return True
 """
 #FICHAS
 def calculos(WIDTH, HEIGHT, jugadores, fichas):

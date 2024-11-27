@@ -4,6 +4,7 @@ import dibujos
 import evento_ruleta as e_ruleta
 import jugadores as players  
 import evento_fichas as e_fichas
+import evento_estadisticas as e_stats
 
 pygame.init()
 
@@ -24,6 +25,7 @@ def main():
     while running:
         running, animating, spin_velocity = e_ruleta.eventos(WIDTH, HEIGHT, animating, spin_velocity)
         angle, spin_velocity, animating = e_ruleta.calculos(dibujos.nums, angle, spin_velocity, animating)
+        e_stats.evento()
 
         e_fichas.fichas = fichas
         e_fichas.manejar_arrastre_fichas()

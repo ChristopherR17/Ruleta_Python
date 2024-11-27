@@ -57,6 +57,7 @@ def app_draw():
     dibujar_ruleta()
     dibujar_mesa()
     dibujar_fichas()
+    dibujar_boton_stats()
 
     pygame.display.update()
 
@@ -281,8 +282,18 @@ def dibuixar_fitxa(x, y, color, denominacio, font2):
     screen.blit(den_text, (x - den_text.get_width() // 2 + Aug_x, y - den_text.get_height() // 2 + Aug_y))
 
 ############ ESTADISTICAS ############
-def estadisticas():
-    pass
+def dibujar_boton_stats():
+    button_width = 150
+    button_height = 50
+    button_x = 200
+    button_y = 750
+
+    font5 = pygame.font.SysFont(None, 36)
+
+    pygame.draw.rect(screen, BLUE, (button_x, button_y, button_width, button_height))
+    text_surface = font5.render("Ver Stats", True, WHITE)
+    text_rect = text_surface.get_rect(center=(button_x + button_width // 2, button_y + button_height // 2))
+    screen.blit(text_surface, text_rect)
 
 
 

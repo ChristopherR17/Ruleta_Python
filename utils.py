@@ -87,16 +87,10 @@ def draw_grid(pygame, screen, size):
     grid_color = (100, 100, 100)
     
     for x in range(0, width, size):
-        pygame.draw.line(screen, grid_color, (x, 0), (x, height))
-        if x % 50 == 0:
-            text = font.render(str(x), True, grid_color)
-            screen.blit(text, (x, 0))
+        pygame.draw.line(screen, grid_color, (x, 0), (x, height)) 
     
     for y in range(0, height, size):
         pygame.draw.line(screen, grid_color, (0, y), (width, y))
-        if y % 50 == 0:
-            text = font.render(str(y), True, grid_color)
-            screen.blit(text, (0, y))
 
 def scale_image(pygame, image, target_width=None, target_height=None):
 

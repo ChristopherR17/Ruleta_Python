@@ -74,3 +74,11 @@ def guardar_stats():
 
 def end():
     pass
+
+#def reorganizar_fichas(jugador):
+#    """
+#    Reorganiza las fichas del jugador en función de su saldo disponible.
+#    """
+#    saldo = jugadores[jugador]["saldo"]
+#    jugadores[jugador]["fichas"] = {5: saldo // 5, 10: saldo // 10, 20: saldo // 20, 50: saldo // 50, 100: saldo // 100}
+#

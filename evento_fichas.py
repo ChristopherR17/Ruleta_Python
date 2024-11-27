@@ -23,6 +23,11 @@ def manejar_arrastre_fichas():
                     offset_y = ficha['y'] - mouse_y
                     break  
         elif event.type == pygame.MOUSEMOTION:
+   
+   
+   
+   
+   
             if dragging and dragged_chip:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 dragged_chip['x'] = mouse_x + offset_x

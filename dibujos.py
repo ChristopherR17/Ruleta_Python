@@ -229,6 +229,7 @@ def dibujar_fichas():
         saldo = data["saldo"]
         fitxes = data["fitxes"]
 
+        #Caja
         box_x = x_offset_start - 50
         box_y = y_offset - 100
         box_width = 395
@@ -240,17 +241,17 @@ def dibujar_fichas():
         screen.blit(text, (box_x + 10, box_y + 10))
 
         y_text = box_y + 50
-        for den, cantidad in sorted(fitxes.items(), reverse=True):  
-            ficha_texto = font3.render(f"Fichas de {den} x {cantidad}", True, BLACK)
+        for val, cantidad in sorted(fitxes.items(), reverse=True):  
+            ficha_texto = font3.render(f"Fichas de {val} x {cantidad}", True, BLACK)
             screen.blit(ficha_texto, (box_x + 10, y_text))
             y_text += 30
 
         y_fichas = y_offset
         x_fichas_start = x_offset_start
-        for den, cantidad in sorted(fitxes.items()): 
+        for val, cantidad in sorted(fitxes.items()): 
             x_fichas = x_fichas_start
             for _ in range(cantidad):
-                ficha = dibuixar_fitxa(x_fichas, y_fichas, color, den, font2)
+                ficha = dibuixar_fitxa(x_fichas, y_fichas, color, val, font2)
                 fichas.append(ficha)
                 x_fichas -= 0  
             y_fichas -= 50 

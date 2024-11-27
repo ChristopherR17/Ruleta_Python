@@ -1,7 +1,7 @@
 import math
 import pygame
 import utils
-from evento_fichas import manejar_eventos_fichas, actualizar_fichas, fichas_validas
+
 # Dimensiones de la ventana
 WIDTH = 1800
 HEIGHT = 950

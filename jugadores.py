@@ -7,7 +7,7 @@ jugadores = {
         "color": ORANGE, 
         "saldo": 100,
         "fitxes": {
-            100: 1,  
+            100: 0,  
             50: 1, 
             20: 1, 
             10: 2,
@@ -18,7 +18,7 @@ jugadores = {
         "color": PURPLE, 
         "saldo": 100,
         "fitxes": {
-            100: 1,  
+            100: 0,  
             50: 1, 
             20: 1, 
             10: 2,
@@ -29,7 +29,7 @@ jugadores = {
         "color": BLUE,
         "saldo": 100,
         "fitxes": {
-            100: 1,  
+            100: 0,  
             50: 1, 
             20: 1, 
             10: 2,
@@ -37,6 +37,12 @@ jugadores = {
         }
     }
 }
+
+def actualizar_saldo(jugadores):
+    for jugador, datos in jugadores.items():
+        saldo_calculado = sum(valor * cantidad for valor, cantidad in datos["fitxes"].items())
+        datos["saldo"] = saldo_calculado
+
 
 #def apostar(jugador, valor_ficha, cantidad, espacio_apuesta):
 #    """

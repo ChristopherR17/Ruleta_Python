@@ -4,7 +4,7 @@ import dibujos
 import evento_ruleta as e_ruleta
 import jugadores as players  
 import evento_fichas as e_fichas
-import evento_estadisticas as e_stats
+import stats
 
 pygame.init()
 
@@ -25,10 +25,16 @@ def main():
     while running:
         running, animating, spin_velocity = e_ruleta.eventos(WIDTH, HEIGHT, animating, spin_velocity)
         angle, spin_velocity, animating = e_ruleta.calculos(dibujos.nums, angle, spin_velocity, animating)
-        e_stats.evento()
 
+        #De momento hay conflicto, tengo que crear una variable que cambie de estado
+        #stats.evento(WIDTH, HEIGHT)
+
+        #Estas 2 aun no van
         e_fichas.fichas = fichas
         e_fichas.manejar_arrastre_fichas()
+
+        players.actualizar_saldo(players.jugadores)
+        stats.evento()
 
         dibujos.animating = animating
         dibujos.resultado = e_ruleta.result_number

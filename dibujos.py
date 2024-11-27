@@ -1,7 +1,7 @@
 import math
 import pygame
 import utils
-
+from evento_fichas import manejar_eventos_fichas, actualizar_fichas, fichas_validas
 # Dimensiones de la ventana
 WIDTH = 1800
 HEIGHT = 950
@@ -294,6 +294,7 @@ def dibujar_boton_stats():
     text_surface = font5.render("Ver Stats", True, WHITE)
     text_rect = text_surface.get_rect(center=(button_x + button_width // 2, button_y + button_height // 2))
     screen.blit(text_surface, text_rect)
+
 
 
 

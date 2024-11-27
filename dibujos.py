@@ -1,6 +1,7 @@
 import math
 import pygame
 import utils
+
 # Dimensiones de la ventana
 WIDTH = 1800
 HEIGHT = 950
@@ -62,17 +63,17 @@ def app_draw():
 
 ############ RULETA ############
 def dibujar_ruleta():
-    # Dibujar la base de madera
+    #Base de madera
     pygame.draw.circle(screen, BROWN, CENTRO, RADIO + 50)
 
-    # Dibujar el borde dorado
+    #Borde dorado
     pygame.draw.circle(screen, GOLD, CENTRO, RADIO + 10)
 
-    # Dibujar el círculo principal
+    #Círculo principal
     pygame.draw.circle(screen, BLACK, CENTRO, RADIO)
     pygame.draw.circle(screen, WHITE, CENTRO, RADIO, 5)
 
-    # Dibujar los segmentos de la ruleta
+    #Segmentos de la ruleta
     radi = 150
     slice_angle = 2 * math.pi / len(nums)
 
@@ -86,19 +87,19 @@ def dibujar_ruleta():
         point2 = polar_to_cartesian(CENTRO, radi, start_angle)
         point3 = polar_to_cartesian(CENTRO, radi, end_angle)
 
-        # Dibujar triángulos de la ruleta y aplicar color
+        #Triángulos de la ruleta y aplicar color
         color = get_color(num)
         pygame.draw.polygon(screen, color, [point1, point2, point3])
 
-        # Dibujar bordes
+        #Bordes
         pygame.draw.line(screen, BLACK, point1, point2, 3)
         pygame.draw.line(screen, BLACK, point1, point3, 3)
 
-        # Calcular posición del texto
+        #Posición del texto
         mid_angle = start_angle + slice_angle / 2
         text_x, text_y = polar_to_cartesian(CENTRO, radi * 0.7, mid_angle)
 
-        # Renderizar números de la ruleta
+        #Renderizar números de la ruleta
         font = pygame.font.SysFont(None, 20)
         text = f"{num}"
         text_surface = font.render(text, True, WHITE)
@@ -110,7 +111,7 @@ def dibujar_ruleta():
     #Anillo exterior
     pygame.draw.circle(screen, GOLD, point1, radi+2, 5)
 
-    #Dibujar indicador
+    #Indicador
     pygame.draw.polygon(screen, RED, [
         (CENTER_X + radi - 15, CENTER_Y),
         (CENTER_X + radi + 40, CENTER_Y - 15),
@@ -256,7 +257,7 @@ def dibujar_fichas():
 
         x_offset_start -= 400  
 
-def dibuixar_fitxa(x, y, color, denominacio, font2):
+def dibuixar_fitxa(x, y, color, valor, font2):
     
     Aug_x = 300
     Aug_y = 120
@@ -269,16 +270,16 @@ def dibuixar_fitxa(x, y, color, denominacio, font2):
     for i in range(12):
         angle = i * 30
         rad = math.radians(angle)
-        dx = int(19 * math.cos(rad))
-        dy = int(19 * math.sin(rad))
-        pygame.draw.circle(screen, WHITE, (x + dx + Aug_x, y + dy + Aug_y), 3)
+        val_x = int(19 * math.cos(rad))
+        val_y = int(19 * math.sin(rad))
+        pygame.draw.circle(screen, WHITE, (x + val_x + Aug_x, y + val_y + Aug_y), 3)
 
     # Círculo interior
     pygame.draw.circle(screen, WHITE, (x + Aug_x, y + Aug_y), 14)
 
     # Número de denominación
-    den_text = font2.render(str(denominacio), True, color)
-    screen.blit(den_text, (x - den_text.get_width() // 2 + Aug_x, y - den_text.get_height() // 2 + Aug_y))
+    val_text = font2.render(str(valor), True, color)
+    screen.blit(val_text, (x - val_text.get_width() // 2 + Aug_x, y - val_text.get_height() // 2 + Aug_y))
 
 ############ ESTADISTICAS ############
 def dibujar_boton_stats():
@@ -293,7 +294,3 @@ def dibujar_boton_stats():
     text_surface = font5.render("Ver Stats", True, WHITE)
     text_rect = text_surface.get_rect(center=(button_x + button_width // 2, button_y + button_height // 2))
     screen.blit(text_surface, text_rect)
-
-
-
-
